@@ -13,7 +13,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-            <li class="nav-item deco" v-if="accessToken!=null"><router-link :to = "{ name:'logout' }"> <p class = "deco">Deconnexion</p></router-link></li>
+            <li class="nav-item deco" v-if="accessToken!=null"><router-link :to = "{ name:'logout' }"> <p class = "deco" v-on:click="supprimer">Deconnexion</p></router-link></li>
           </ul>
         </div>
 
@@ -24,10 +24,29 @@
 
 <script>
     import { mapState } from 'vuex'
+
+    import { getAPI } from '../axios-api'
     export default {
     name: 'Navbar',
-    computed: mapState(['accessToken'])
+    computed: mapState(['accessToken']),
+
+    methods: {
+    async supprimer() {
+            getAPI.get('/ajouter/clean/')
+            .then(response =>{
+                console.log(response),
+                console.log("Supression réussie")
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        },
+      },
+
   }
+  
+
+
 </script>
 
 <style scoped>

@@ -26,6 +26,7 @@
 </template>
 
 <script>
+    import { getAPI } from '../axios-api'
   export default {
     name: 'login',
     data () {
@@ -43,13 +44,26 @@
         })
         .then(() => {
           this.$router.push({ name: 'fichier' })
+          this.supprimer()
         })
         .catch(err => {
           console.log(err)
           this.incorrectAuth = true
         })
-        }
-      }
+        },
+
+      async supprimer() {
+            getAPI.get('/ajouter/clean/')
+            .then(response =>{
+                console.log(response),
+                console.log("Supression réussie")
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        },
+      },
+      
   }
 </script>
 
