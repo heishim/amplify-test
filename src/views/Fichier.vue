@@ -131,6 +131,7 @@
                 progress: 0,
                 progress2: 0,
                 present : false,
+                UserData :[],
                 
             };
         },

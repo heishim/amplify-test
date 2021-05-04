@@ -1,8 +1,6 @@
 <template>
   <div>
-     <a class="navbar-brand" href="#">
-                <img src="../assets/altao.png" width="100" height="8" class="d-inline-block align-top" alt="" loading="lazy">
-        </a>
+     <a class="navbar-brand" href="https://altao.com/"> <img src="../assets/altao.png" width="100" height="8" class="d-inline-block align-top" alt="" loading="lazy"></a>
   <div class="container text-dark">
     <div class="row justify-content-md-center">
       <div class="col-md-5 p-3 login justify-content-md-center">
