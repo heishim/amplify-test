@@ -8,7 +8,7 @@
       <div class="col-md-5 p-3 login justify-content-md-center">
         <h1 class="h3 mb-3 font-weight-normal text-center text-white">Connectez vous</h1>
 
-        <p v-if="incorrectAuth">Identifiant ou mot de passe incorrect</p>
+        <p v-if="incorrectAuth" class="text-white">Identifiant ou mot de passe incorrect</p>
         <form v-on:submit.prevent="login">
           <div class="form-group">
             <input type="text" name="username" id="user" v-model="username" class="form-control" placeholder="Username">
