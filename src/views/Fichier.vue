@@ -188,6 +188,8 @@
 
             if (allowedTypes.includes(this.file.type)){
                 if(this.EmptyData[0].vide == "true"){
+
+                this.supprimerbis()
                 const formData = new FormData();
                 formData.append("title", this.file.name);
                 formData.append("contenu",file);
