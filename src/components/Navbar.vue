@@ -43,7 +43,7 @@
     <form class="form-inline my-2 my-lg-0">
        <a class="nav-link"><b class="deco">Connecté :</b> <a class="deco">{{this.$store.user}}</a> </a>
       <a v-if="accessToken!=null"><router-link :to = "{ name:'logout' }">
-      <button class="btn btn-outline-danger my-2 my-sm-0" v-on:click="supprimer">Deconnexion</button>
+      <button class="btn btn-outline-danger my-2 my-sm-0" v-on:click="supprimer_deco">Deconnexion</button>
       </router-link></a>
     </form>
 
@@ -60,21 +60,59 @@
     data () {
         return {
             UserData :[],
+            EmptyData : [],
+            UserData2 : [],
+            var : null
         };
     },    
     computed: mapState(['accessToken']),
 
     methods: {
-    async supprimer() {
-            getAPI.get('/ajouter/clean/')
-            .then(response =>{
-                console.log(response),
-                console.log("Supression réussie")
-            })
-            .catch(err => {
-                console.log(err)
-            })
+
+        async supprimer_deco(){
+
+            await getAPI.get('/empty/')
+                .then(response =>{
+                    console.log('Le fichier de l API à bien été recu !')
+                    this.EmptyData = response.data
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+                if(this.EmptyData[0].vide == "true"){
+                    this.var = null
+                }else{
+                await getAPI.get('/user/')
+                .then(response =>{
+                    console.log('Le fichier de l API à bien été recu !')
+                    this.UserData2 = response.data
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+                if(this.UserData2[0].user == this.$store.user){
+                    getAPI.get('/clean/')
+                    .then(response =>{
+                        console.log(response),
+                        console.log("Supression réussie")
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+                    }else{
+                        getAPI.get('/deletedelay/')
+                        .then(response =>{
+                            console.log('Le fichier de l API à bien été recu !')
+                            console.log(response)
+                        })
+                        .catch(err => {
+                            console.log(err)
+                        })
+  
+                    }
+                    }
         },
+
     },
 
   }

@@ -45,7 +45,7 @@
     <div class="content">
         <div class="mx-auto" style="width: 200px;">
         <ul>
-             <span v-if="file && (file.type == 'text/plain')" class="file-name">{{file.name}}</span>
+             <span v-if="file && (file.type == 'text/plain') && (file != null)" class="file-name">{{file.name}}</span>
         </ul>  
         </div>
     </div>  
@@ -118,6 +118,9 @@
         data () {
             return {
                 APIData: [],
+                WaitData : [],
+                EmptyData : [],
+                UserData2 : [],
                 SortieData: [],
                 file: "",
                 donnee: {
@@ -167,28 +170,94 @@
 
 
         async validerEnvoiDrop() {
-            this.supprimer()
+            this.APIData = null
+            this.ex = false 
+            this.progress2 = 0
+            this.present = false
             this.file = this.$refs.file.files[0]
             const file = this.file
             const allowedTypes = ["text/plain"]
+            await getAPI.get('/empty/')
+                .then(response =>{
+                    console.log('Le fichier de l API à bien été recu !')
+                    this.EmptyData = response.data
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+
             if (allowedTypes.includes(this.file.type)){
+                if(this.EmptyData[0].vide == "true"){
                 const formData = new FormData();
                 formData.append("title", this.file.name);
                 formData.append("contenu",file);
+                formData.append("user",this.$store.user);
                 try{
                 this.uploading = true;
-                const res = await getAPI.post('/ajouter/fichiers/',formData,{
+                const res = await getAPI.post('/fichiers/',formData,{
                     onUploadProgress: e => this.progress = Math.round(e.loaded * 100 / e.total)
                 });
                 this.uploadedFiles.push(res.data.file);
                 this.uploading = false;
-                this.present = true;
                 this.progress2 = 0;
                 }catch(err) {
                     this.message = err.response.data.error;
                     this.error = true;
                     this.uploading = false;
                 }
+                }else{
+                    await getAPI.get('/user/')
+                    .then(response =>{
+                        console.log('Le fichier de l API à bien été recu !')
+                        this.UserData2 = response.data
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+                    if(this.UserData2[0].user == this.$store.user){
+                        this.supprimerbis()
+                        const formData = new FormData();
+                        formData.append("title", this.file.name);
+                        formData.append("contenu",file);
+                        formData.append("user",this.$store.user);
+                        try{
+                        this.uploading = true;
+                        const res = await getAPI.post('/fichiers/',formData,{
+                            onUploadProgress: e => this.progress = Math.round(e.loaded * 100 / e.total)
+                        });
+                        this.uploadedFiles.push(res.data.file);
+                        this.uploading = false;
+                        this.progress2 = 0;
+                        }catch(err) {
+                            this.message = err.response.data.error;
+                            this.error = true;
+                            this.uploading = false;
+                        }
+                        }else{
+                            getAPI.get('/deletedelay/')
+                            .then(response =>{
+                                console.log('Le fichier de l API à bien été recu !')
+                                console.log(response)
+                            })
+                            .catch(err => {
+                                console.log(err)
+                            })
+                            this.ex = false 
+                            this.progress2 = 0
+                            this.present = false
+                            this.APIData = null
+                            this.donnee.title= null
+                            this.file = null
+                            this.$fire({
+                            title: "Server",
+                            text: "Veuillez réessayer dans 5 minutes",
+                            type: "error",
+                            timer: 10000
+                            }).then(r => {
+                            console.log(r.value);
+                        });
+                        }
+                    }
             }else {
                 this.$fire({
                     title: "Mauvais format",
@@ -202,8 +271,19 @@
             //this.file = null
             //this.donnee.title = null
         },
+        patienter (){
+            getAPI.get('/patienter/')
+            .then(response =>{
+                console.log('veuillez patienter')
+                this.WaitData = response.data
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
+        },
         created3 () {
-            getAPI.get('/ajouter/donnee/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
+            getAPI.get('/donnee/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
                 .then(response => {
                     this.$store.state.APIData= response.data
                 })
@@ -214,7 +294,7 @@
 
         async created () {
             //this.supprimer()
-            getAPI.get('/ajouter/donnee')
+            getAPI.get('/donnee')
             .then(response =>{
                 console.log('Le fichier de l API à bien été recu !')
                 this.APIData = response.data
@@ -222,12 +302,13 @@
             .catch(err => {
                 console.log(err)
             })
+           
             //this.ex = false
 
         },
 
         async resultat(){
-            getAPI.get('/ajouter/sortie',)
+            getAPI.get('/sortie',)
             .then(response =>{
                 console.log('REPONSE DE LA FONCTION GROUPAGE')
                 this.SortieData = response.data
@@ -238,8 +319,135 @@
 
         },
 
+        async supprimer_deco(){
+
+            await getAPI.get('/empty/')
+                .then(response =>{
+                    console.log('Le fichier de l API à bien été recu !')
+                    this.EmptyData = response.data
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+                if(this.EmptyData[0].vide == "true"){
+                    this.ex = false 
+                    this.progress2 = 0
+                    this.present = false
+                    this.APIData = null
+                    this.donnee.title= null
+                    this.file = null
+                
+                }else{
+                await getAPI.get('/user/')
+                .then(response =>{
+                    console.log('Le fichier de l API à bien été recu !')
+                    this.UserData2 = response.data
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+                if(this.UserData2[0].user == this.$store.user){
+                    getAPI.get('/clean/')
+                    .then(response =>{
+                        console.log(response),
+                        console.log("Supression réussie")
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+                    this.ex = false 
+                    this.progress2 = 0
+                    this.present = false
+                    this.APIData = null
+                    this.donnee.title= null
+                    this.file = null
+                    }else{
+                        getAPI.get('/deletedelay/')
+                        .then(response =>{
+                            console.log('Le fichier de l API à bien été recu !')
+                            console.log(response)
+                        })
+                        .catch(err => {
+                            console.log(err)
+                        })
+  
+                    }
+                    }
+        },
+
+
+    
+
         async supprimer() {
-            getAPI.get('/ajouter/clean/')
+            await getAPI.get('/empty/')
+                .then(response =>{
+                    console.log('Le fichier de l API à bien été recu !')
+                    this.EmptyData = response.data
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+                if(this.EmptyData[0].vide == "true"){
+                    this.ex = false 
+                    this.progress2 = 0
+                    this.present = false
+                    this.APIData = null
+                    this.donnee.title= null
+                    this.file = null
+                    this.$fire({
+                    title: "Aucun RSS",
+                    type: "error",
+                    timer: 10000
+                    }).then(r => {
+                    console.log(r.value);
+                });
+                
+                }else{
+                await getAPI.get('/user/')
+                .then(response =>{
+                    console.log('Le fichier de l API à bien été recu !')
+                    this.UserData2 = response.data
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+                if(this.UserData2[0].user == this.$store.user){
+                    getAPI.get('/clean/')
+                    .then(response =>{
+                        console.log(response),
+                        console.log("Supression réussie")
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+                    this.ex = false 
+                    this.progress2 = 0
+                    this.present = false
+                    this.APIData = null
+                    this.donnee.title= null
+                    this.file = null
+                    }else{
+                        getAPI.get('/deletedelay/')
+                        .then(response =>{
+                            console.log('Le fichier de l API à bien été recu !')
+                            console.log(response)
+                        })
+                        .catch(err => {
+                            console.log(err)
+                        })
+                        this.$fire({
+                        title: "Vous n'avez aucun RSS",
+                        type: "error",
+                        timer: 10000
+                        }).then(r => {
+                        console.log(r.value);
+                    });
+                    }
+                    }
+        },
+
+        async supprimerbis() {
+            getAPI.get('/clean/')
             .then(response =>{
                 console.log(response),
                 console.log("Supression réussie")
@@ -248,8 +456,9 @@
                 console.log(err)
             })
             this.APIData = null
-            this.donnee.title= null
-            this.file = null
+            this.ex = false 
+            this.progress2 = 0
+            this.present = false
         },
 
         async validerEnvoi() {
@@ -257,7 +466,7 @@
             const formData = new FormData();
             formData.append("title", this.donnee.title);
             formData.append("contenu", this.file);
-            getAPI.post('/ajouter/fichiers/',formData)
+            getAPI.post('/fichiers/',formData)
             .then(response =>{
                 console.log(response),
                 console.log("L'envoi a l'API réussi")
@@ -300,7 +509,9 @@
             }).then(r => {
             console.log(r.value);
         });*/
-        if ( this.present == true){
+        this.present = true
+
+        if ( this.file != null){
         this.progression()
         this.created()
         this.file = null
@@ -322,7 +533,7 @@
         
         async telecharger(){
             axios({
-                url : 'http://ec2-34-222-77-100.us-west-2.compute.amazonaws.com/media/media/RSS_GROUPE.zip',
+                url : 'https://django.backend-altao.com/media/media/RSS_GROUPE.zip',
                 method: 'GET',
                 responseType: 'blob',
             }).then((response) =>{
@@ -335,7 +546,7 @@
 
                 fileLink.click()
             })
-            this.supprimer()
+            this.supprimerbis()
         },
      
     }

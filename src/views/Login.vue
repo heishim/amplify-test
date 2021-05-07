@@ -42,7 +42,7 @@
         })
         .then(() => {
           this.$router.push({ name: 'fichier' })
-          this.supprimer()
+          //this.supprimer()
         })
         .catch(err => {
           console.log(err)
@@ -51,7 +51,7 @@
         },
 
       async supprimer() {
-            getAPI.get('/ajouter/clean/')
+            getAPI.get('/clean/')
             .then(response =>{
                 console.log(response),
                 console.log("Supression réussie")
