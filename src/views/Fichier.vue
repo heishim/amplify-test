@@ -535,7 +535,7 @@
         
         async telecharger(){
             axios({
-                url : 'https://django.backend-altao.com/media/media/RSS_GROUPE.zip',
+                url : 'https://backend-altao.com/media/media/RSS_GROUPE.zip',
                 method: 'GET',
                 responseType: 'blob',
             }).then((response) =>{

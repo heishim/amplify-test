@@ -105,7 +105,7 @@
         
         async telecharger(name){
             axios({
-                url : 'https://backend-altao.com/' + name,
+                url : 'https://backend-altao.com/media/resultat/' + name,
                 method: 'GET',
                 responseType: 'blob',
             }).then((response) =>{
