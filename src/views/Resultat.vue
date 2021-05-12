@@ -105,7 +105,7 @@
         
         async telecharger(name){
             axios({
-                url : 'http://127.0.0.1:8000/media/resultat/' + name,
+                url : 'https://django.backend-altao.com/' + name,
                 method: 'GET',
                 responseType: 'blob',
             }).then((response) =>{
@@ -133,7 +133,7 @@
             })
 
             axios({
-                url : 'http://127.0.0.1:8000/media/zip/' + this.name_zip[0],
+                url : 'https://django.backend-altao.com/media/zip/' + this.name_zip[0],
                 method: 'GET',
                 responseType: 'blob',
             }).then((response) =>{
