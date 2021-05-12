@@ -6,6 +6,11 @@ import store from './store'
 import IdleVue from 'idle-vue'
 import VueSimpleAlert from "vue-simple-alert";
 import VueEllipseProgress from 'vue-ellipse-progress';
+import Vuetify from 'vuetify'
+
+var VueScrollactive = require('vue-scrollactive');
+Vue.use(VueScrollactive);
+Vue.use(Vuetify);
 
 Vue.use(VueEllipseProgress);
 

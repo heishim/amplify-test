@@ -41,7 +41,7 @@
           password: this.password
         })
         .then(() => {
-          this.$router.push({ name: 'fichier' })
+          this.$router.push({ name: 'menu' })
           //this.supprimer()
         })
         .catch(err => {

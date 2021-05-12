@@ -449,7 +449,7 @@
         },
 
         async supprimerbis() {
-            getAPI.get('/clean/')
+            await getAPI.get('/clean/')
             .then(response =>{
                 console.log(response),
                 console.log("Supression réussie")
@@ -489,7 +489,7 @@
         var interval = setInterval(() =>{
             if(this.progress2 < 100){
                 this.ex = true
-                this.progress2 += .1;
+                this.progress2 += .075;
             }
             else{
                 this.ex = false 

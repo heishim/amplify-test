@@ -38,7 +38,9 @@
 
       <li class="nav-item">
         <a class="nav-link" href="https://altao.com/">Site</a>
+        
       </li>
+      <button class="btn btn-outline-secondary my-2 my-sm-0" v-on:click="menu">Menu</button>
     </ul>
     <form class="form-inline my-2 my-lg-0">
        <a class="nav-link"><b class="deco">Connecté :</b> <a class="deco">{{this.$store.user}}</a> </a>
@@ -68,6 +70,10 @@
     computed: mapState(['accessToken']),
 
     methods: {
+
+      menu(){
+            this.$router.push({ name: 'menu' })
+        },
 
         async supprimer_deco(){
 
