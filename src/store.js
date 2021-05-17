@@ -7,7 +7,8 @@ export default new Vuex.Store({
   state: {
      accessToken: null,
      refreshToken: null,
-     APIData: '',
+     APIData6: [],
+     APIData7: [],
      user : '',
      connect : false,
   },

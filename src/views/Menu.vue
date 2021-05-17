@@ -18,9 +18,9 @@
             <button class="btn btn-xxl btn-outline-success btn-lg btn-block" role="button" v-on:click = "recuperer">RECUPERER DES FICHIERS</button>
     
           <br>
-            <button v-if="this.$store.user=='admin'" class="btn btn-xxl btn-outline-secondary btn-lg btn-block" role="button" v-on:click = "finess">AJOUTER DES NUMEROS FINESS</button>
+            <button v-if="this.$store.user=='Solemne'" class="btn btn-xxl btn-outline-secondary btn-lg btn-block" role="button" v-on:click = "finess">AJOUTER DES NUMEROS FINESS</button>
                 <br>
-            <button v-if="this.$store.user=='admin'" class="btn btn-xxl btn-outline-primary btn-lg btn-block" role="button" v-on:click = "resultat">RECUPERATION DU RESULTAT</button>
+            <button v-if="this.$store.user=='Solemne'" class="btn btn-xxl btn-outline-primary btn-lg btn-block" role="button" v-on:click = "resultat">RECUPERATION DU RESULTAT</button>
 
 
         </div>

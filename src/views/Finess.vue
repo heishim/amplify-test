@@ -27,7 +27,7 @@
             </div>
             <select class="custom-select" id="inputGroupSelect02" v-model="valeurEtablissement" >
                 <option selected>Choisissez un établissement</option>
-                <option v-for="fichier in APIData4" :key="fichier.id" value:fichier.finess>{{fichier.finess}}</option>
+                <option v-for="fichier in APIData" :key="fichier.id" value:fichier.etab>{{fichier.etab}}</option>
             </select>
         </div>
 
@@ -77,6 +77,7 @@
 <script>
    import { getAPI } from '../axios-api'
 import Navbar from '../components/Navbar'
+    import { mapState } from 'vuex'
 export default {
     name: 'customSelect',
     data() {
@@ -85,6 +86,7 @@ export default {
             valeurEtablissement:"",
             APIData4 : [],
             APIData5 : [],
+            APIData9 : [],
             present2 : false,
             ex2 : false,
             progress3 : 0
@@ -100,13 +102,14 @@ export default {
         components: {
             Navbar
         },
+        computed: mapState(['APIData7']),
 
     created () {
 
             getAPI.get('/user')
             .then(response =>{
                 console.log('Resultat recu')
-                this.APIData4 = response.data
+                    this.APIData4= response.data
             })
             .catch(err => {
                 console.log(err)
@@ -115,6 +118,14 @@ export default {
             .then(response =>{
                 console.log('Resultat recu')
                 this.APIData5 = response.data
+            })
+            .catch(err => {
+                console.log(err)
+            })
+            getAPI.get('/etab')
+            .then(response =>{
+                console.log('Resultat recu')
+                this.APIData9 = response.data
             })
             .catch(err => {
                 console.log(err)
@@ -145,7 +156,17 @@ export default {
             .catch(err => {
                 console.log(err)
             })
+            getAPI.get('/etab')
+            .then(response =>{
+                console.log('Resultat recu')
+                this.APIData9 = response.data
+            })
+            .catch(err => {
+                console.log(err)
+            })
         },
+
+
 
         progression(){
         

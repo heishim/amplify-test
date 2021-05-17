@@ -87,7 +87,7 @@
 
         created () {
 
-            getAPI.get('/resultat')
+            getAPI.get('/resultat', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
             .then(response =>{
                 console.log('Resultat recu')
                 this.APIData3 = response.data

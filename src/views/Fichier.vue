@@ -149,7 +149,7 @@
         components: {
             Navbar
         },
-        computed: mapState(['APIData']),
+        computed: mapState(['APIData7']),
 
 
          methods: {
