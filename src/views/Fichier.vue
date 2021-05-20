@@ -96,7 +96,7 @@
         </div>
     </div>
     <div class="mx-auto" style="width: 520px;">
-       <h8><i><c>*Cliquez sur le bouton ci dessous si une erreur est survenue*</c></i></h8>
+       <h8><i><c>*Cliquez sur le bouton ci-dessous si une erreur est survenue*</c></i></h8>
     </div>
     
     <div class="mx-auto" style="width: 70px;">

@@ -42,10 +42,10 @@
       <a class="nav-link" v-on:click="menu">Accueil</a>
     <select class="form-select-color" color="red" aria-label="multiple select example" v-model="selected">
   <option disabled value="">Menu</option>
-  <option v-on:click="depot">Depot</option>
-  <option v-on:click="recuperer">Recuperer</option>
+  <option v-on:click="depot">Depôt</option>
+  <option v-on:click="recuperer">Récupérer</option>
   <option v-if="this.$store.user=='Solemne'" v-on:click="finess">Finess</option>
-  <option v-if="this.$store.user=='Solemne'" v-on:click="resultat">Resultats</option>
+  <option v-if="this.$store.user=='Solemne'" v-on:click="resultat">Résultats</option>
 
 </select>
 
@@ -53,7 +53,7 @@
     <form class="form-inline my-2 my-lg-0">
        <a class="nav-link"><b class="deco">Connecté :</b> <a class="deco">{{this.$store.user}}</a> </a>
       <a v-if="accessToken!=null"><router-link :to = "{ name:'logout' }">
-      <button class="btn btn-outline-danger my-2 my-sm-0" v-on:click="supprimer_deco">Deconnexion</button>
+      <button class="btn btn-outline-danger my-2 my-sm-0" v-on:click="supprimer_deco">Déconnexion</button>
       </router-link></a>
     </form>
 

@@ -26,7 +26,7 @@
 
                     <input type="radio" :id="fichier.id" :value="fichier" v-model="picked2">
 
-                    <j>__</j>
+                    <k>_</k>
                     <img width="20" height="8" src="../assets/Doc.png"  >
                     <j>    {{fichier}}</j>
 
@@ -358,6 +358,11 @@ h{
     font-size: 20px;
     
 }
-
+k{
+    color : white;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 20px;
+    
+}
  
 </style>
