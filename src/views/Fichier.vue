@@ -2,9 +2,13 @@
     <div class="fichier">
         <Navbar></Navbar>
 
-        <div class="mx-auto" style="width: 600px;">
-        <img src="../assets/outil.png" width="600" height="200" class="d-inline-block align-top" alt="" loading="lazy">
+         <div class="mx-auto" style="width: 560px;">
+        <e><br>OUTIL DE TRAITEMENT DES </e> <d>RSS </d>
         </div>
+         <div class="mx-auto" style="width: 300px;">
+        <f>________________________________________________________</f>
+        </div>
+        <br>
 
 
 <!--enctype permet de dire que c'est spécial et qu'on va utilise plusieurs données de data-->
@@ -76,6 +80,8 @@
                 <img width="200" height="8" src="../assets/Doc.png" class="d-inline-block align-top" alt="" loading="lazy">
                 <div class="card-body">
                     <h4 class=""><a class="text-secondary" :href= fichier.contenu>{{fichier.title}}</a></h4>
+                    <h1 v-if="popmessage(fichier.title,fichier.email)"></h1>
+                        
                     <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
                     <!--<a  class="btn btn-sm btn-outline-primary" role="button" aria-pressed="true" v-on:click="resultat">ZIP</a>-->
@@ -138,37 +144,28 @@
                 
             };
         },
-
         onIdle () {
             this.$store.dispatch('userLogout')
                 .then(() => {
                 this.$router.push({ name: 'login' })
                 })
         },
-
         components: {
             Navbar
         },
         computed: mapState(['APIData7']),
-
-
          methods: {
-
         link(lien){
             let texte = '"' + lien + '"';
             return texte;
         },
-
         selectionDeFichier(){
             this.file = this.$refs.file.files[0];
         },
-
         activate() {
         var that = this;
         setTimeout(function() { that.isHidden = false; }, 200);
         },
-
-
         async validerEnvoiDrop() {
             this.APIData = null
             this.ex = false 
@@ -185,10 +182,8 @@
                 .catch(err => {
                     console.log(err)
                 })
-
             if (allowedTypes.includes(this.file.type)){
                 if(this.EmptyData[0].vide == "true"){
-
                 this.supprimerbis()
                 const formData = new FormData();
                 formData.append("title", this.file.name);
@@ -246,7 +241,7 @@
                             })
                             this.ex = false 
                             this.progress2 = 0
-                            this.present = false
+                            //this.present = false
                             this.APIData = null
                             this.donnee.title= null
                             this.file = null
@@ -282,7 +277,6 @@
             .catch(err => {
                 console.log(err)
             })
-
         },
         created3 () {
             getAPI.get('/donnee/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
@@ -294,6 +288,32 @@
                 })
             },
 
+        popmessage(title,email){
+
+            if(title != "erreur.txt"){
+                    this.$fire({
+                    title: "Fichier bien envoyé",
+                    type: "success",
+                    text: "Vous recevrez le resultat par mail (" + email + ") dans les 48h",
+                    timer: 10000
+                    }).then(r => {
+                    console.log(r.value);
+                });
+            }
+            else{
+                    this.$fire({
+                    title: "Probleme lors de l'envoi du fichier",
+                    type: "error",
+                    text: "Veuillez suivre les étapes suivantes : 1 - Clean 2 - Déconnexion 3 - Connectez vous et recommencez",
+                    timer: 10000
+                    }).then(r => {
+                    console.log(r.value);
+                });
+                this.present=false
+                this.progress2=0
+            }
+
+        },
         async created () {
             //this.supprimer()
             getAPI.get('/donnee')
@@ -306,9 +326,7 @@
             })
            
             //this.ex = false
-
         },
-
         async resultat(){
             getAPI.get('/sortie',)
             .then(response =>{
@@ -318,11 +336,8 @@
             .catch(err => {
                 console.log(err)
             })
-
         },
-
         async supprimer_deco(){
-
             await getAPI.get('/empty/')
                 .then(response =>{
                     console.log('Le fichier de l API à bien été recu !')
@@ -376,10 +391,7 @@
                     }
                     }
         },
-
-
     
-
         async supprimer() {
             await getAPI.get('/empty/')
                 .then(response =>{
@@ -447,7 +459,6 @@
                     }
                     }
         },
-
         async supprimerbis() {
             await getAPI.get('/clean/')
             .then(response =>{
@@ -462,7 +473,6 @@
             this.progress2 = 0
             this.present = false
         },
-
         async validerEnvoi() {
             //this.supprimer()
             const formData = new FormData();
@@ -492,13 +502,14 @@
                 this.progress2 += .075;
             }
             else{
+
                 this.ex = false 
                 this.present = false
                 clearInterval(interval);
+
                 
             }
         }, 10)
-
     },
      
     execution(){
@@ -512,11 +523,30 @@
             console.log(r.value);
         });*/
         this.present = true
-
         if ( this.file != null){
         this.progression()
         this.created()
         this.file = null
+            if(this.APIData[0].title != "erreur"){
+                    this.$fire({
+                    title: "Fichier bien envoyé",
+                    type: "success",
+                    text: "Vous recevrez le resultat par mail dans les 48h",
+                    timer: 10000
+                    }).then(r => {
+                    console.log(r.value);
+                });
+            }
+            else{
+                    this.$fire({
+                    title: "Probleme lors de l'envoi du fichier",
+                    type: "error",
+                    text: "Veuillez suivre les étapes suivantes : 1 - Clean 2 - Déconnexion 3 - Connectez vous et recommencez",
+                    timer: 10000
+                    }).then(r => {
+                    console.log(r.value);
+                });
+            }
         } else{
             this.$fire({
             title: "Erreur",
@@ -527,7 +557,6 @@
         });
         }
     },
-
     execution2(){
         this.telecharger()
         this.APIData = null
@@ -542,10 +571,8 @@
                 var fileUrl = window.URL.createObjectURL(new Blob([response.data]))
                 var fileLink = document.createElement('a')
                 fileLink.href = fileUrl
-
                 fileLink.setAttribute('download', 'RSS_GROUPE.zip')
                 document.body.appendChild(fileLink)
-
                 fileLink.click()
             })
             this.supprimerbis()
@@ -556,7 +583,6 @@
 </script>
 
 <style scoped>
-
     .dropzone{
         min-height : 200px;
         padding: 10px 10px;
@@ -567,7 +593,6 @@
         background:#E4E4E4 ;
         color: #AB111C;
               font-family: Verdana, Geneva, Tahoma, sans-serif;
-
     }
     .input-file{
         opacity: 0;
@@ -576,17 +601,14 @@
         position: absolute;
         cursor: pointer;
     }
-
     .dropzone:hover{
         background :#666666;
     }
-
     .dropzone .call-to-action {
         font-size: 1.2rem;
         text-align: center;
         padding: 70px 0;
     }
-
     .dropzone .progress-bar{
         text-align: center;
         padding: 70px 10px;
@@ -598,7 +620,6 @@
   b{
       color : #AB111C;
       font-family: Verdana, Geneva, Tahoma, sans-serif;
-
   }
   c{
             font-family: Verdana, Geneva, Tahoma, sans-serif;

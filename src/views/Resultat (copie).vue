@@ -9,10 +9,6 @@
         <f>________________________________________________________</f>
         </div>
         <br>
-         <div class="mx-auto" style="width: 700px;">
-        <h> Veuillez sélectionner le(s) dossier(s) à télécharger ou supprimer : </h>
-        </div>
-        <br>
 
 
 
@@ -21,15 +17,11 @@
         <div class="row">
             <div v-for="fichier in APIData3" :key="fichier.id" class="col-md-4">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item"> 
-
-
-                    <input type="radio" :id="fichier.id" :value="fichier" v-model="picked2">
-
-                    <j>__</j>
-                    <img width="20" height="8" src="../assets/Doc.png"  >
-                    <j>    {{fichier}}</j>
-
+                <li class="list-group-item"> <img width="20" height="8" src="../assets/Doc.png"  >
+                    <j >    {{fichier}}</j>
+                    <br>
+                    <a  class="btn btn-sm btn-outline-danger" role="button" aria-pressed="true" v-on:click="telecharger(fichier)">TELECHARGER</a>
+                    <b  class="btn btn-sm btn-outline-secondary" role="button" aria-pressed="true" v-on:click="supprimer(fichier,fichier.id)">SUPPRIMER</b>
                     </li>
                     
                 
@@ -53,21 +45,12 @@
 
             </progress>
         </p> 
-        <input type="radio" id="all" value="all" v-model="picked2">
-<label for="all">Tout séléctionner</label>
-<br>
-
-
-
-                   
-
-
-            <b  class="btn btn-sm btn-outline-secondary btn-lg btn-block " role="button" aria-pressed="true" v-on:click="telecharger(picked2)">TELECHARGER : {{picked2}}</b>
-
-            <a  class="btn btn-sm btn-outline-danger btn-lg btn-block " role="button" aria-pressed="true" v-on:click="supprimer(picked2)">SUPPRIMER</a>
-
-
-
+    <div class="mx-auto" style="width: 70px;">
+         <a  class="btn btn-sm btn-outline-danger" role="button" aria-pressed="true" v-on:click="telecharger_all">TELECHARGER(TOUT)</a>
+    </div>
+    <div class="mx-auto" style="width: 10px;">
+            <b  class="btn btn-sm btn-outline-secondary" role="button" aria-pressed="true" v-on:click="supprimer_all">SUPPRIMER (TOUT)</b>
+    </div>
     
 
 
@@ -96,9 +79,7 @@
                 name_zip : [],
                 present2 : false,
                 ex2 : false,
-                progress3 : 0,
-                picked : "",
-                picked2 : "",
+                progress3 : 0
             };
         },
 
@@ -130,15 +111,9 @@
 
          methods: {
 
-        affectation(name){
-        
-        this.picked2 = name
-
-        },
-
         
         
-        async telecharger2(name){
+        async telecharger(name){
             axios({
                 url : 'https://backend-altao.com/media/resultat/' + name,
                 method: 'GET',
@@ -207,53 +182,15 @@
 
         },
 
-        async telecharger(name){
-        if(this.picked2 == ""){
-            this.$fire({
-            text: "Aucun fichier séléctionné",
-            timer: 5000
-            }).then(r => {
-            console.log(r.value);
-        });
-        }
-        else{
-        if(name=="all"){
-            this.$confirm("Voulez vous vraiment tout télécharger ?").then(() => {
-            this.telecharger_all()
-            });
-        }
-        else{
-        this.$confirm("Voulez vous télécharger le fichier " + name + " ?").then(() => {
-            this.telecharger2(name)
-        });
-        }
-        }
-        },
-
         async supprimer(name){
-        if(this.picked2 == ""){
-            this.$fire({
-            text: "Aucun fichier séléctionné",
-            timer: 5000
-            }).then(r => {
-            console.log(r.value);
-        });
-        }
-        else{
-        if(name=="all"){
-            this.supprimer_all()
-        }
-        else{
+            
         this.$confirm("Voulez vous vraiment supprimer le fichier " + name + " ?").then(() => {
             this.boite(name)
         });
-        }
-        }
         },
 
-
         async supprimer_all(){
-            this.$confirm("Voulez vous vraiment tout supprimer ?").then(() => {
+            this.$confirm("Voulez vous vraiment tout suprimer ?").then(() => {
             getAPI.get('/delete_all/')
             .then(response =>{
                 console.log(response),
@@ -352,12 +289,6 @@ f{
       font-family: Verdana, Geneva, Tahoma, sans-serif;
       font-size: 10px;
 }
-h{
-    color : #666666;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 20px;
-    
-}
-
- 
+  
+  
 </style>

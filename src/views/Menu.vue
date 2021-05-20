@@ -3,10 +3,14 @@
             
         <Navbar></Navbar>
 
-         <div class="mx-auto" style="width: 600px;">
-        <img src="../assets/outil.png" width="600" height="200" class="d-inline-block align-top" alt="" loading="lazy">
+         <div class="mx-auto" style="width: 165px;">
+        <br><e>ACCUEIL </e>
         </div>
-
+         <div class="mx-auto" style="width: 180px;">
+        <f>________________________________</f>
+        </div>
+        <br>
+        
 
 
         <div class="album py-5 bg-light">
@@ -15,12 +19,12 @@
 
             <button class="btn btn-xxl btn-outline-danger btn-lg btn-block " role="button" v-on:click = "depot">DEPOSER DES FICHIERS RSS</button>
                <br>
-            <button class="btn btn-xxl btn-outline-success btn-lg btn-block" role="button" v-on:click = "recuperer">RECUPERER DES FICHIERS</button>
+            <button class="btn btn-xxl btn-outline-secondary btn-lg btn-block" role="button" v-on:click = "recuperer">RECUPERER DES FICHIERS</button>
     
           <br>
-            <button v-if="this.$store.user=='Solemne'" class="btn btn-xxl btn-outline-secondary btn-lg btn-block" role="button" v-on:click = "finess">AJOUTER DES NUMEROS FINESS</button>
+            <button v-if="this.$store.user=='Solemne'" class="btn btn-xxl btn-outline-danger btn-lg btn-block" role="button" v-on:click = "finess">AJOUT DE NUMEROS FINESS</button>
                 <br>
-            <button v-if="this.$store.user=='Solemne'" class="btn btn-xxl btn-outline-primary btn-lg btn-block" role="button" v-on:click = "resultat">RECUPERATION DU RESULTAT</button>
+            <button v-if="this.$store.user=='Solemne'" class="btn btn-xxl btn-outline-secondary btn-lg btn-block" role="button" v-on:click = "resultat">RECUPERATION DES RESULTATS</button>
 
 
         </div>
@@ -69,5 +73,24 @@
 body { 
   background-color:#0000;
 }
+d{
+      color : #AB111C;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      font-size: 35px;
+      
+  }
+e{
+    color : #666666;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 35px;
+    
+}
+f{
+      color : #AB111C;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      font-size: 10px;
+      
+  }
+
 
 </style>

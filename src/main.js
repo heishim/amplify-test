@@ -7,12 +7,15 @@ import IdleVue from 'idle-vue'
 import VueSimpleAlert from "vue-simple-alert";
 import VueEllipseProgress from 'vue-ellipse-progress';
 import Vuetify from 'vuetify'
+import Modal from "@burhanahmeed/vue-modal-2";
 
 var VueScrollactive = require('vue-scrollactive');
 Vue.use(VueScrollactive);
 Vue.use(Vuetify);
 
 Vue.use(VueEllipseProgress);
+
+
 
 //import Amplify, * as AmplifyModules from 'aws-amplify';
 //import { AmplifyPlugin } from 'aws-amplify-vue';
@@ -23,10 +26,15 @@ Vue.use(VueEllipseProgress);
 
 const eventsHub = new Vue()
 
+Vue.use(Modal);
+
 Vue.use(IdleVue, {
   eventEmitter: eventsHub,
   idleTime: 350000
 })
+
+
+
 
 Vue.use(VueSimpleAlert);
 

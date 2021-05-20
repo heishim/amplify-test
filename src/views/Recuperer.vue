@@ -2,9 +2,13 @@
     <div class="fichier">
         <Navbar></Navbar>
 
-        <div class="mx-auto" style="width: 600px;">
-        <img src="../assets/outil.png" width="600" height="200" class="d-inline-block align-top" alt="" loading="lazy">
+         <div class="mx-auto" style="width: 550px;">
+        <e><br>RECUPERATION DU </e> <d>RESULTAT </d>
         </div>
+         <div class="mx-auto" style="width: 300px;">
+        <f>________________________________________________________</f>
+        </div>
+        <br>
 
 
 
@@ -137,6 +141,24 @@
   }
   c{
             font-family: Verdana, Geneva, Tahoma, sans-serif;
+  }
+  d{
+      color : #AB111C;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      font-size: 35px;
+      
+  }
+e{
+    color : #666666;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 35px;
+    
+}
+f{
+      color : #AB111C;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      font-size: 10px;
+      
   }
   
 </style>

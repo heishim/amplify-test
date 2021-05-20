@@ -38,9 +38,17 @@
 
       <li class="nav-item">
         <a class="nav-link" href="https://altao.com/">Site</a>
-        
       </li>
-      <button class="btn btn-outline-secondary my-2 my-sm-0" v-on:click="menu">Menu</button>
+      <a class="nav-link" v-on:click="menu">Accueil</a>
+    <select class="form-select-color" color="red" aria-label="multiple select example" v-model="selected">
+  <option disabled value="">Menu</option>
+  <option v-on:click="depot">Depot</option>
+  <option v-on:click="recuperer">Recuperer</option>
+  <option v-if="this.$store.user=='Solemne'" v-on:click="finess">Finess</option>
+  <option v-if="this.$store.user=='Solemne'" v-on:click="resultat">Resultats</option>
+
+</select>
+
     </ul>
     <form class="form-inline my-2 my-lg-0">
        <a class="nav-link"><b class="deco">Connecté :</b> <a class="deco">{{this.$store.user}}</a> </a>
@@ -64,12 +72,26 @@
             UserData :[],
             EmptyData : [],
             UserData2 : [],
-            var : null
+            var : null,
+            selected: "",
         };
     },    
     computed: mapState(['accessToken']),
 
     methods: {
+
+       depot(){
+            this.$router.push({ name: 'fichier' })
+        },
+        recuperer(){
+            this.$router.push({ name: 'recuperer' })
+        },
+        finess(){
+            this.$router.push({ name: 'finess' })
+        },
+        resultat(){
+            this.$router.push({ name: 'resultat' })
+        },
 
       menu(){
             this.$router.push({ name: 'menu' })
@@ -130,5 +152,8 @@
 <style scoped>
 .deco{
   color : #666666;
+}
+t{
+  background-color: #666666; 
 }
 </style>
