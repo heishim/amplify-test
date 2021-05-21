@@ -7,6 +7,7 @@ import Menu from './views/Menu'
 import Recuperer from './views/Recuperer'
 import Finess from './views/Finess'
 import Resultat from './views/Resultat'
+import Solemne from './views/Solemne'
 
 
 Vue.use(VueRouter)
@@ -61,6 +62,14 @@ export default new VueRouter({
             path: '/resultat',
             name: 'resultat',
             component: Resultat,
+            meta: {
+                requiresLogin: true
+              }
+        },
+        {
+            path: '/solemne',
+            name: 'solemne',
+            component: Solemne,
             meta: {
                 requiresLogin: true
               }

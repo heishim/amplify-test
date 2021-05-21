@@ -1,81 +1,23 @@
+
 <template>
-    <div class="Resultat">
+    <div class="Solemne">
         <Navbar></Navbar>
 
-         <div class="mx-auto" style="width: 560px;">
-        <e><br>RECUPERATION DES </e> <d>RESULTATS </d>
+         <div class="mx-auto" style="width: 700px;">
+        <e><br>JE VIENS TE TENIR COMPAGNIE </e> <d>LUNDI </d>
         </div>
          <div class="mx-auto" style="width: 300px;">
         <f>________________________________________________________</f>
         </div>
+                 <div class="mx-auto" style="width: 700px;">
+        <img src="../assets/fete.jpg" width="600" height="100" class="d-inline-block align-top" alt="" loading="lazy">
+                 </div>
         <br>
          <div class="mx-auto" style="width: 700px;">
-        <h> Veuillez sélectionner le(s) dossier(s) à télécharger ou supprimer : </h>
+        <h> *si tout se passe bien </h>
         </div>
         <br>
-
-
-
-    <div class="album py-5 bg-light">
-        <div class="container-xxl">
-        <div class="row">
-            <div v-for="fichier in APIData3" :key="fichier.id" class="col-md-4">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item"> 
-
-
-                    <input type="radio" :id="fichier.id" :value="fichier" v-model="picked2">
-
-                    <k>_</k>
-                    <img width="20" height="8" src="../assets/Doc.png"  >
-                    <j>    {{fichier}}</j>
-
-                    </li>
-                    
-                
-
-
-
-
-            </ul>
-            </div>
-        </div>
-        </div>
-    </div>
-    <p v-if="present2==true" class="progress-bar">
-            <progress 
-                class="progress is-primary progress-bar-striped bg-danger progress-bar-animated"
-                :value="progress3"
-                max="100"
-            >
-                    
-            {{progress3}} %
-
-            </progress>
-        </p> 
-        <input type="radio" id="all" value="all" v-model="picked2">
-<label for="all">Tout séléctionner</label>
-<br>
-
-
-
-        <div class="mx-auto" style="width: 100px;">
-        <br><dg>{{picked2}} </dg>
-        </div>
-
-
-            <b  class="btn btn-sm btn-outline-secondary btn-lg btn-block " role="button" aria-pressed="true" v-on:click="telecharger(picked2)">TELECHARGER</b>
-
-            <a  class="btn btn-sm btn-outline-danger btn-lg btn-block " role="button" aria-pressed="true" v-on:click="supprimer(picked2)">SUPPRIMER</a>
-
-
-
-    
-
-
-
-        
-    
+ 
     </div>
 
     
@@ -364,7 +306,7 @@ f{
 h{
     color : #666666;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 20px;
+    font-size: 10px;
     
 }
 k{
