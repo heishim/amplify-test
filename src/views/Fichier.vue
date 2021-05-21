@@ -2,7 +2,7 @@
     <div class="fichier">
         <Navbar></Navbar>
 
-         <div class="mx-auto" style="width: 560px;">
+         <div class="mx-auto" style="width: 625px;">
         <e><br>OUTIL DE TRAITEMENT DES </e> <d>RSS </d>
         </div>
          <div class="mx-auto" style="width: 300px;">

@@ -2,7 +2,7 @@
     <div class="Resultat">
         <Navbar></Navbar>
 
-         <div class="mx-auto" style="width: 560px;">
+         <div class="mx-auto" style="width: 625px;">
         <e><br>RECUPERATION DES </e> <d>RESULTATS </d>
         </div>
          <div class="mx-auto" style="width: 300px;">

@@ -44,8 +44,8 @@
   <option disabled value="">Menu</option>
   <option v-on:click="depot">Depôt</option>
   <option v-on:click="recuperer">Récupérer</option>
-  <option v-if="this.$store.user=='Solemne'" v-on:click="finess">Finess</option>
-  <option v-if="this.$store.user=='Solemne'" v-on:click="resultat">Résultats</option>
+  <option v-if="this.$store.user=='Altao'" v-on:click="finess">Finess</option>
+  <option v-if="this.$store.user=='Altao'" v-on:click="resultat">Résultats</option>
 
 </select>
 
