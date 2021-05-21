@@ -141,7 +141,7 @@
                 progress2: 0,
                 present : false,
                 UserData :[],
-                APIData10 = 0,
+                APIData10 : "",
                 
             };
         },
@@ -299,7 +299,7 @@
                    // timer: 10000
                    // }).then(r => {
                    // console.log(r.value);
-                    APIData10 = 0
+                    this.APIData10 = email
             }
             else{
                     this.$fire({
