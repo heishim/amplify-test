@@ -141,6 +141,7 @@
                 progress2: 0,
                 present : false,
                 UserData :[],
+                APIData10 = 0,
                 
             };
         },
@@ -291,14 +292,14 @@
         popmessage(title,email){
 
             if(title != "erreur.txt"){
-                    this.$fire({
-                    title: "Fichier bien envoyé",
-                    type: "success",
-                    text: "Vous recevrez le resultat par mail (" + email + ") dans les 48h",
-                    timer: 10000
-                    }).then(r => {
-                    console.log(r.value);
-                });
+                    //this.$fire({
+                    //title: "Fichier bien envoyé",
+                    //type: "success",
+                    //text: "Vous recevrez le resultat par mail (" + email + ") dans les 48h",
+                   // timer: 10000
+                   // }).then(r => {
+                   // console.log(r.value);
+                    APIData10 = 0
             }
             else{
                     this.$fire({

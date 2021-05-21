@@ -22,11 +22,10 @@
             <button class="btn btn-xxl btn-outline-secondary btn-lg btn-block" role="button" v-on:click = "recuperer">RECUPERER DES FICHIERS</button>
     
           <br>
-            <button v-if="this.$store.user=='Solemne'" class="btn btn-xxl btn-outline-danger btn-lg btn-block" role="button" v-on:click = "finess">AJOUT DE NUMEROS FINESS</button>
+            <button v-if="this.$store.user=='Altao'" class="btn btn-xxl btn-outline-danger btn-lg btn-block" role="button" v-on:click = "finess">AJOUT DE NUMEROS FINESS</button>
                 <br>
-            <button v-if="this.$store.user=='Solemne'" class="btn btn-xxl btn-outline-secondary btn-lg btn-block" role="button" v-on:click = "resultat">RECUPERATION DES RESULTATS</button>
- <br>
-            <button v-if="this.$store.user=='Solemne'" class="btn btn-xxl btn-outline-danger btn-lg btn-block" role="button" v-on:click = "solemne">SOLEMNE</button>
+            <button v-if="this.$store.user=='Altao'" class="btn btn-xxl btn-outline-secondary btn-lg btn-block" role="button" v-on:click = "resultat">RECUPERATION DES RESULTATS</button>
+
 
 
         </div>
