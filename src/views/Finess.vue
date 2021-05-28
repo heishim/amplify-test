@@ -91,9 +91,13 @@
 
 
 <script>
+    import axios from 'axios';
    import { getAPI } from '../axios-api'
 import Navbar from '../components/Navbar'
     import { mapState } from 'vuex'
+    axios.defaults.xsrfCookieName = 'csrftoken'
+    axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
+
 export default {
     name: 'customSelect',
     data() {
@@ -123,6 +127,7 @@ export default {
         },
         computed: mapState(['APIData7']),
 
+//récuperation des données : noms d'utilisateurs, régions, user et finess associé
     created () {
 
             getAPI.get('/users')
@@ -156,6 +161,7 @@ export default {
          methods: {
 
 
+//récuperation des données : noms d'utilisateurs, régions, user et finess associé
         created () {
 
             getAPI.get('/users')
@@ -184,6 +190,7 @@ export default {
             })
         },
 
+//suppression de la méthode finess
         delete_donnee_finess(){
             getAPI.get('/delete_donnee_finess')
             .then(response =>{
@@ -195,7 +202,7 @@ export default {
             })
         },
 
-
+//récupération des régions
         region(){
             if(this.valeurRegion != ""){
             this.APIData9=""
@@ -228,13 +235,13 @@ export default {
         },
 
 
-
+//barre de chargement
         progression(){
         
             var interval = setInterval(() =>{
                 if(this.progress3 < 100){
                     this.present2 = true
-                    this.progress3 += .3;
+                    this.progress3 += .5;
                 }
                 else{
                     this.ex2 = false 
@@ -247,6 +254,7 @@ export default {
 
         },
 
+//fonction intermediaire d'ajout de finess
          async ajouter2(){
             this.progression()
             const formData = new FormData();
@@ -270,6 +278,8 @@ export default {
             })
             this.created()
         },
+
+//fonction intermediaire de suppression de finess
 
          async supprimer2(){
             this.progression()
@@ -295,6 +305,8 @@ export default {
             this.created()
         },
 
+//fonction intermediaire de suppression d'user
+
          async supprimer_user_finess2(){
             this.progression()
             const formData = new FormData();
@@ -319,6 +331,7 @@ export default {
             this.created()
         },
 
+//fonction d'ajout de finess
         async ajouter(etab,user){
         if(etab != "" && user != ""){   
         this.$confirm("Ajouter l'établissement " + etab + " à l'utilisateur "+ user + " ?").then(() => {
@@ -337,6 +350,7 @@ export default {
         }
         },
 
+//fonction de suppression de finess
         async supprimer(etab,user){
        if(etab != "" && user != ""){ 
         this.$confirm("Supprimer l'établissement " + etab + " lié à l'utilisateur "+ user + " ?").then(() => {
@@ -354,6 +368,8 @@ export default {
         });
         }
         },
+
+//fonction de suppression d'user
 
         async supprimer_user_finess(user){
         if(user != ""){ 

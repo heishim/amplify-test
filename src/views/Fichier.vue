@@ -20,7 +20,7 @@
         </div>
 
     
- <!--enctype permet de dire que c'est spécial et qu'on va utilise plusieurs données de data-->
+ <!--Création de la dropzone-->
     <div class="dropzone">
         <input
             type="file"
@@ -70,7 +70,7 @@
             </progress>
         </p> 
 
-<!--enctype permet de dire que c'est spécial et qu'on va utilise plusieurs données de data-->
+<!--Création de l'affichage des fichiers-->
 
     <div class="album py-5 bg-light">
         <div class="container">
@@ -80,14 +80,13 @@
                 <img width="200" height="8" src="../assets/Doc.png" class="d-inline-block align-top" alt="" loading="lazy">
                 <div class="card-body">
                     <h4 class=""><a class="text-secondary" :href= fichier.contenu>{{fichier.title}}</a></h4>
+                     <!-- Affichage du message pop up -->
                     <h1 v-if="popmessage(fichier.title,fichier.email)"></h1>
                         
                     <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
-                    <!--<a  class="btn btn-sm btn-outline-primary" role="button" aria-pressed="true" v-on:click="resultat">ZIP</a>-->
                     <b  class="btn btn-sm btn-outline-secondary" role="button" aria-pressed="true" v-on:click="execution2">TELECHARGER</b>
                     </div>
-                    <!--<small class="text-muted">{{fichier.date}}</small>-->
                 </div>
                 </div>
             </div>
@@ -101,8 +100,7 @@
     
     <div class="mx-auto" style="width: 70px;">
 
-    <a class="btn btn-sm btn-outline-secondary" role="button" aria-pressed="true" v-on:click="supprimer" >Clean</a>
-    <!-- <a href="http://localhost:8080/" class="btn btn-sm btn-outline-primary" role="button" aria-pressed="true" v-on:click="supprimer">Recharger la page</a>-->
+    <a class="btn btn-sm btn-outline-secondary" role="button" aria-pressed="true" v-on:click="supprimer" >Supprimer données</a>
     </div>
 
                      
@@ -145,36 +143,44 @@
                 
             };
         },
+
+        //fonction qui s'execute a l'arrivée sur la page
         onIdle () {
             this.$store.dispatch('userLogout')
                 .then(() => {
                 this.$router.push({ name: 'login' })
                 })
         },
+
+        //declaration des composants
         components: {
             Navbar
         },
+        
+        //Variable de store.js
         computed: mapState(['APIData7']),
-         methods: {
-        link(lien){
-            let texte = '"' + lien + '"';
-            return texte;
-        },
-        selectionDeFichier(){
-            this.file = this.$refs.file.files[0];
-        },
-        activate() {
-        var that = this;
-        setTimeout(function() { that.isHidden = false; }, 200);
-        },
+
+        //Déclaration de toutes les fonctions :
+        methods: {
+
+//Fonction qui permet d'envoyer le fichier et les données au back grace a l'API Axios : 
+
         async validerEnvoiDrop() {
+
+            //réinitialiser les données
             this.APIData = null
             this.ex = false 
             this.progress2 = 0
             this.present = false
+
+            //assignation du fichier a la constante file
             this.file = this.$refs.file.files[0]
             const file = this.file
+
+            //liste des types de fichiers acceptés
             const allowedTypes = ["text/plain"]
+
+            //Récupération de la donnée EmptyData :  true si vide, false si non vide
             await getAPI.get('/empty/')
                 .then(response =>{
                     console.log('Le fichier de l API à bien été recu !')
@@ -183,13 +189,24 @@
                 .catch(err => {
                     console.log(err)
                 })
-            if (allowedTypes.includes(this.file.type)){
-                if(this.EmptyData[0].vide == "true"){
-                this.supprimerbis()
+
+            
+            if (allowedTypes.includes(this.file.type)){ //si bon type fichier continue
+                
+                
+                if(this.EmptyData[0].vide == "true"){ //si back est vide continue
+                this.supprimerbis() //nettoie la base
+
+
+
+                //Ajout des données dans la liste formData : 
                 const formData = new FormData();
                 formData.append("title", this.file.name);
                 formData.append("contenu",file);
                 formData.append("user",this.$store.user);
+                //formData.append("csrfmiddlewaretoken",this.getCookie('csrftoken'));
+
+                //Envoi des données au backend
                 try{
                 this.uploading = true;
                 const res = await getAPI.post('/fichiers/',formData,{
@@ -204,6 +221,7 @@
                     this.uploading = false;
                 }
                 }else{
+                    //recupération de l'user pour determiner si l'user présent est autorisé à modifier les fichiers
                     await getAPI.get('/user/')
                     .then(response =>{
                         console.log('Le fichier de l API à bien été recu !')
@@ -232,6 +250,7 @@
                             this.uploading = false;
                         }
                         }else{
+                            //suppression des données avec delai de 4 minutes
                             getAPI.get('/deletedelay/')
                             .then(response =>{
                                 console.log('Le fichier de l API à bien été recu !')
@@ -257,6 +276,7 @@
                         }
                     }
             }else {
+                //format different de .txt
                 this.$fire({
                     title: "Mauvais format",
                     text: "Veuillez réesayer avec un fichier au format .txt",
@@ -269,38 +289,21 @@
             //this.file = null
             //this.donnee.title = null
         },
-        patienter (){
-            getAPI.get('/patienter/')
-            .then(response =>{
-                console.log('veuillez patienter')
-                this.WaitData = response.data
-            })
-            .catch(err => {
-                console.log(err)
-            })
-        },
-        created3 () {
-            getAPI.get('/donnee/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
-                .then(response => {
-                    this.$store.state.APIData= response.data
-                })
-                .catch(err => {
-                    console.log(err)
-                })
-            },
+        
 
+//Message popup indiquant si la fonction est un succes ou pas 
         popmessage(title,email){
 
             if(title != "erreur.txt"){
-                    //this.$fire({
-                    //title: "Fichier bien envoyé",
-                    //type: "success",
-                    //text: "Vous recevrez le resultat par mail (" + email + ") dans les 48h",
-                   // timer: 10000
-                   // }).then(r => {
-                   // console.log(r.value);
+                    this.$fire({
+                    title: "Fichier bien envoyé",
+                    type: "success",
+                    text: "Vous recevrez le resultat par mail (" + email + ") dans les 48h",
+                    timer: 10000
+                    }).then(r => {
+                    console.log(r.value);
                     this.APIData10 = email
-            }
+            })}
             else{
                     this.$fire({
                     title: "Probleme lors de l'envoi du fichier",
@@ -315,12 +318,14 @@
             }
 
         },
+
+//récupération des données du fichier
         async created () {
             //this.supprimer()
             getAPI.get('/donnee')
             .then(response =>{
                 console.log('Le fichier de l API à bien été recu !')
-                this.APIData = response.data
+                this.APIData = response.data //donnee du titre, fichier
             })
             .catch(err => {
                 console.log(err)
@@ -328,6 +333,8 @@
            
             //this.ex = false
         },
+
+//appel de sortie pour zippage du dossier
         async resultat(){
             getAPI.get('/sortie',)
             .then(response =>{
@@ -338,60 +345,8 @@
                 console.log(err)
             })
         },
-        async supprimer_deco(){
-            await getAPI.get('/empty/')
-                .then(response =>{
-                    console.log('Le fichier de l API à bien été recu !')
-                    this.EmptyData = response.data
-                })
-                .catch(err => {
-                    console.log(err)
-                })
-                if(this.EmptyData[0].vide == "true"){
-                    this.ex = false 
-                    this.progress2 = 0
-                    this.present = false
-                    this.APIData = null
-                    this.donnee.title= null
-                    this.file = null
-                
-                }else{
-                await getAPI.get('/user/')
-                .then(response =>{
-                    console.log('Le fichier de l API à bien été recu !')
-                    this.UserData2 = response.data
-                })
-                .catch(err => {
-                    console.log(err)
-                })
-                if(this.UserData2[0].user == this.$store.user){
-                    getAPI.get('/clean/')
-                    .then(response =>{
-                        console.log(response),
-                        console.log("Supression réussie")
-                    })
-                    .catch(err => {
-                        console.log(err)
-                    })
-                    this.ex = false 
-                    this.progress2 = 0
-                    this.present = false
-                    this.APIData = null
-                    this.donnee.title= null
-                    this.file = null
-                    }else{
-                        getAPI.get('/deletedelay/')
-                        .then(response =>{
-                            console.log('Le fichier de l API à bien été recu !')
-                            console.log(response)
-                        })
-                        .catch(err => {
-                            console.log(err)
-                        })
-  
-                    }
-                    }
-        },
+
+//fonction qui supprime les données 
     
         async supprimer() {
             await getAPI.get('/empty/')
@@ -460,6 +415,9 @@
                     }
                     }
         },
+
+//suppression de données sans bouton 
+
         async supprimerbis() {
             await getAPI.get('/clean/')
             .then(response =>{
@@ -474,27 +432,9 @@
             this.progress2 = 0
             this.present = false
         },
-        async validerEnvoi() {
-            //this.supprimer()
-            const formData = new FormData();
-            formData.append("title", this.donnee.title);
-            formData.append("contenu", this.file);
-            getAPI.post('/fichiers/',formData)
-            .then(response =>{
-                console.log(response),
-                console.log("L'envoi a l'API réussi")
-            })
-            .catch(err => {
-                this.message = err.response.data.error;
-                this.error = true;
-                console.log(err)
-            })
-            //this.file = null
-            //this.donnee.title = null
-        },
-    timeout(ms) { //pass a time in milliseconds to this function
-        return new Promise(resolve => setTimeout(resolve, ms));
-    },
+
+
+//progression de la barre de chargement
     progression(){
         
         var interval = setInterval(() =>{
@@ -513,21 +453,15 @@
         }, 10)
     },
      
+
+//bouton d'execution = groupage, zipage et renvoi au frontend
     execution(){
-        //this.$alert("Veuillez patienter...");
-        /*this.$fire({
-            title: "Execution",
-            text: "Veuillez patienter...",
-            type: "success",
-            timer: 10000
-            }).then(r => {
-            console.log(r.value);
-        });*/
         this.present = true
         if ( this.file != null){
         this.progression()
         this.created()
         this.file = null
+        //si fichier vaut erreur alors arret
             if(this.APIData[0].title != "erreur"){
                     this.$fire({
                     title: "Fichier bien envoyé",
@@ -558,6 +492,9 @@
         });
         }
     },
+
+
+//fonction qui permet le telechargement 
     execution2(){
         this.telecharger()
         this.APIData = null
@@ -578,6 +515,64 @@
             })
             this.supprimerbis()
         },
+
+        /*
+        selectionDeFichier(){
+            this.file = this.$refs.file.files[0];
+        },
+        activate() {
+        var that = this;
+        setTimeout(function() { that.isHidden = false; }, 200);
+        },
+
+        created3 () {
+            getAPI.get('/donnee/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
+                .then(response => {
+                    this.$store.state.APIData= response.data
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+            },
+
+        async validerEnvoi() {
+            //this.supprimer()
+            const formData = new FormData();
+            formData.append("title", this.donnee.title);
+            formData.append("contenu", this.file);
+            getAPI.post('/fichiers/',formData)
+            .then(response =>{
+                console.log(response),
+                console.log("L'envoi a l'API réussi")
+            })
+            .catch(err => {
+                this.message = err.response.data.error;
+                this.error = true;
+                console.log(err)
+            })
+            //this.file = null
+            //this.donnee.title = null
+        },
+    timeout(ms) { //pass a time in milliseconds to this function
+        return new Promise(resolve => setTimeout(resolve, ms));
+    },
+
+       getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+},
+        */
      
     }
     }

@@ -268,6 +268,7 @@
             });
         },
 
+//envoi du nom du fichier a supprimer et suppression
         async boite(name){
             
             const formData = new FormData();
