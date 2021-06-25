@@ -440,7 +440,7 @@
         var interval = setInterval(() =>{
             if(this.progress2 < 100){
                 this.ex = true
-                this.progress2 += .075;
+                this.progress2 += 0.003846153846;
             }
             else{
 

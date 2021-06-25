@@ -7,6 +7,8 @@ import Menu from './views/Menu'
 import Recuperer from './views/Recuperer'
 import Finess from './views/Finess'
 import Resultat from './views/Resultat'
+import Codage from './views/Codage'
+import Choix from './views/choix_rss'
 
 
 Vue.use(VueRouter)
@@ -61,6 +63,22 @@ export default new VueRouter({
             path: '/resultat',
             name: 'resultat',
             component: Resultat,
+            meta: {
+                requiresLogin: true
+              }
+        },
+        {
+            path: '/codage',
+            name: 'codage',
+            component: Codage,
+            meta: {
+                requiresLogin: true
+              }
+        },
+        {
+            path: '/choix',
+            name: 'choix',
+            component: Choix,
             meta: {
                 requiresLogin: true
               }

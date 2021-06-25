@@ -25,7 +25,11 @@
             <button v-if="this.$store.user=='Altao'" class="btn btn-xxl btn-outline-danger btn-lg btn-block" role="button" v-on:click = "finess">AJOUT DE NUMEROS FINESS</button>
                 <br>
             <button v-if="this.$store.user=='Altao'" class="btn btn-xxl btn-outline-secondary btn-lg btn-block" role="button" v-on:click = "resultat">RECUPERATION DES RESULTATS</button>
-
+  <br>
+            <button class="btn btn-xxl btn-outline-danger btn-lg btn-block" role="button" v-on:click = "codage">OUTIL DE RECODAGE</button>
+  <br>
+            <button class="btn btn-xxl btn-outline-danger btn-lg btn-block" role="button" v-on:click = "choix">OUTIL DE RECODAGE CHOIX</button>
+                
 
 
         </div>
@@ -65,8 +69,11 @@
         resultat(){
             this.$router.push({ name: 'resultat' })
         },
-        solemne(){
-            this.$router.push({ name: 'solemne' })
+        codage(){
+            this.$router.push({ name: 'codage' })
+        },
+        choix(){
+            this.$router.push({ name: 'choix' })
         }
     },
     

@@ -8,10 +8,22 @@ import VueSimpleAlert from "vue-simple-alert";
 import VueEllipseProgress from 'vue-ellipse-progress';
 import Vuetify from 'vuetify'
 import Modal from "@burhanahmeed/vue-modal-2";
+import vuetify from './plugins/vuetify'
+import '@mdi/font/css/materialdesignicons.css' 
+import "vue-select/dist/vue-select.css";
+import vSelect from "vue-select";
 
 var VueScrollactive = require('vue-scrollactive');
 Vue.use(VueScrollactive);
+
+Vue.component("v-select", vSelect);
+
 Vue.use(Vuetify);
+export default new Vuetify({
+  icons: {
+    iconfont: 'mdi', // default - only for display purposes
+  },
+})
 
 Vue.use(VueEllipseProgress);
 
@@ -52,8 +64,15 @@ router.beforeEach((to, from, next) => {
   }
 })
 
+
+
+
+
 new Vue({
   router,
   store,
+  vuetify,
   render: h => h(App),
 }).$mount('#app')
+
+
