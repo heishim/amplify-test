@@ -60,7 +60,9 @@
                   {{ ghm.severite }}
                 </td>
               </tr>
+            
             </v-container>
+            
           </v-card>
         </v-flex>
       </v-layout>

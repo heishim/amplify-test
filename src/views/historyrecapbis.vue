@@ -32,9 +32,9 @@
               <v-badge dot color="red lighten-"></v-badge>
             </div>
             <v-container>
-              <v-card-title primary-title class="justify-center">
-                DP
-              </v-card-title>
+              <v-card>
+                <v-card-title>RUM 0</v-card-title>
+              </v-card>
               <p style="text-align: center">{{ avant.dp }}</p>
               <v-card-title primary-title class="justify-center">
                 DAS

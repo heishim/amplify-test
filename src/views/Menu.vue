@@ -28,7 +28,7 @@
   <br>
             <button class="btn btn-xxl btn-outline-danger btn-lg btn-block" role="button" v-on:click = "codage">OUTIL DE RECODAGE</button>
   <br>
-            <button class="btn btn-xxl btn-outline-danger btn-lg btn-block" role="button" v-on:click = "choix">OUTIL DE RECODAGE CHOIX</button>
+
                 
 
 

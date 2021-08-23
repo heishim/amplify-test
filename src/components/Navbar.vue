@@ -18,6 +18,7 @@
   <option v-on:click="recuperer">Récupérer</option>
   <option v-if="this.$store.user=='Altao'" v-on:click="finess">Finess</option>
   <option v-if="this.$store.user=='Altao'" v-on:click="resultat">Résultats</option>
+  <option v-on:click="codage">Codage</option>
 
 </select>
 
@@ -63,6 +64,9 @@
         },
         resultat(){
             this.$router.push({ name: 'resultat' })
+        },
+        codage(){
+            this.$router.push({ name: 'codage' })
         },
 
       menu(){

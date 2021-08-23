@@ -57,7 +57,7 @@
         <div class="mx-auto" style="width: 100px;">
         <a class="btn btn-sm btn-outline-secondary" role="button" aria-pressed="true" v-on:click="execution" >Execution</a>
         </div>
-
+<!--
        <p v-if="ex && present==true" class="progress-bar">
             <progress 
                 class="progress is-primary progress-bar-striped bg-danger progress-bar-animated"
@@ -69,6 +69,16 @@
 
             </progress>
         </p> 
+-->
+ <v-progress-circular
+      :size="50"
+      :width="4"
+      color="red"
+      indeterminate
+      style="width: 1300px;"
+      v-if="present==true"
+
+    ></v-progress-circular>
 
 <!--Création de l'affichage des fichiers-->
 
@@ -322,10 +332,17 @@
 //récupération des données du fichier
         async created () {
             //this.supprimer()
-            getAPI.get('/donnee')
+            await getAPI.get('/donnee')
             .then(response =>{
                 console.log('Le fichier de l API à bien été recu !')
                 this.APIData = response.data //donnee du titre, fichier
+            })
+            .catch(err => {
+                console.log(err)
+            })
+            await getAPI.get('/donnee2')
+            .then(response =>{
+                console.log(response)
             })
             .catch(err => {
                 console.log(err)
@@ -435,12 +452,12 @@
 
 
 //progression de la barre de chargement
-    progression(){
+/*    progression(){
         
         var interval = setInterval(() =>{
             if(this.progress2 < 100){
                 this.ex = true
-                this.progress2 += 0.003846153846;
+                this.progress2 += 0.02;
             }
             else{
 
@@ -452,13 +469,13 @@
             }
         }, 10)
     },
-     
+   */  
 
 //bouton d'execution = groupage, zipage et renvoi au frontend
     execution(){
         this.present = true
         if ( this.file != null){
-        this.progression()
+        //this.progression()
         this.created()
         this.file = null
         //si fichier vaut erreur alors arret
@@ -470,9 +487,12 @@
                     timer: 10000
                     }).then(r => {
                     console.log(r.value);
+                    this.present= false
                 });
+                
             }
             else{
+                    this.present = false
                     this.$fire({
                     title: "Probleme lors de l'envoi du fichier",
                     type: "error",
@@ -483,6 +503,7 @@
                 });
             }
         } else{
+            this.present = false
             this.$fire({
             title: "Erreur",
             text: "Aucun fichier",

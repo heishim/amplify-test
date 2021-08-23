@@ -1,0 +1,1696 @@
+<template>
+    <div class="Codage">
+
+<v-app>
+<Navbar></Navbar>
+
+
+
+<v-container class="album py-5 ">
+<v-row>
+
+  <v-container class="album py-5 ">
+<v-row>
+<v-select
+          v-model="var_finess"
+          :items="API_finess"
+          v-on:click="recherche_finess"
+          label="Etablissement"
+          outlined
+        ></v-select>
+<v-select
+          v-model="var_date"
+          :items="API_date"
+          v-on:click="recherche_date"
+          label="Date"
+          outlined
+        ></v-select>
+       
+</v-row>
+</v-container>              
+
+<v-autocomplete filled rounded v-model="var_rss" v-on:click="liste_rss" label="Rechercher un fichier RSS" :items="API_rss"
+ append-icon="mdi-magnify"
+ d-flex
+ > 
+            <template v-slot:append>
+              <v-fade-transition leave-absolute>
+                <v-progress-circular
+                  v-if="loading"
+                  size="24"
+                  color="info"
+                  indeterminate
+                ></v-progress-circular>
+              </v-fade-transition>
+
+            </template>
+    
+          </v-autocomplete>
+              <v-btn elevation="4" x-large v-if="var_plus==false" class="mx-auto" v-on:click="var_plus=!(var_plus)">
+                  <v-icon >fas fa-plus</v-icon>
+              </v-btn>
+                <v-btn elevation="4" x-large v-if="var_plus==true" class="mx-auto" v-on:click="var_plus=!(var_plus)">
+                  <v-icon >fas fa-minus</v-icon>
+              </v-btn>
+              <v-btn elevation="4" x-large class="mx-auto" v-on:click="recherche_rss()">
+                  <v-icon >fas fa-search</v-icon>
+              </v-btn>
+</v-row>   
+ <v-select
+                  v-model="var_critere"
+                  :items="critere"
+                  attach
+                  chips
+                  deletable-chips
+                  :menu-props="{ bottom: true, offsetY: true }"
+                  label="Critères"
+                  multiple
+                  clearable
+                  v-if="var_plus==true"
+                ></v-select>
+
+
+
+      <v-btn
+        class="ma-2"
+        color="grey darken-2"
+        dark
+        v-on:click="rss_precedant(0)"
+        style=" float: left"
+      >
+        <v-icon
+          dark
+          left
+        >
+          mdi-arrow-left
+        </v-icon>Precedent
+      </v-btn>
+
+    <v-progress-circular
+      :size="40"
+      :width="4"
+      color="red"
+      indeterminate
+      style="width: 900px;"
+      v-if="progression==true"
+
+    ></v-progress-circular>
+
+
+      <v-btn
+        class="ma-2"
+        color="red darken-2"
+        dark
+        v-on:click="rss_suivant(0)"
+        style=" float: right"
+      >Suivant 
+        <v-icon
+          dark
+          right
+        >
+          mdi-arrow-right
+        </v-icon>
+      </v-btn>
+
+
+
+
+
+
+
+</v-container>   
+
+
+<!--
+   <div class="album py-5 bg-light">
+        <div class="container-xxl">
+        <div class="row">
+            <div v-for="rss in APIData_RSS" :key="rss.id" class="col-md-4">
+            <ul class="list-group list-group-flush">
+
+                    <a >   Finess {{rss.finess}} : Rss {{rss.num_rss}} : date entree {{rss.date_entree}}</a>
+                    <br>
+
+            </ul>
+            </div>
+        </div>
+        </div>
+    </div>
+    <a v-if="donnee==1">{{var_rss}} _ {{var_finess}} _ {{var_date}}_{{APIData_RSS[0].num_rss}}</a>-->
+    
+
+
+
+
+<v-container v-if="donnee==1">        
+<v-layout row wrap style="margin-bottom:10px; margin-top: 20px; border: 6px solid rgb(190, 190, 190); background-color:rgb(245, 245, 245)">
+        <v-flex md3 lg3>
+          <v-card height="100%" >
+            <v-container class="headercards">
+              <tr style="margin-bottom: 16px">
+                <td class="idcard"><b_bis>Nombre RUM</b_bis> : {{ APIData_RUM[0].info_carte.nombre_rum }} </td>
+                <td class="idcard"><b_bis>Age</b_bis> {{ APIData_RSS[0].age }} ans / jour si - 1an</td>
+
+              </tr>
+              <tr width="50px">
+                <td class="idcard"><b_bis>N°séjour</b_bis> {{ APIData_RSS[0].num_admin }}</td>
+                <td class="idcard"><b_bis>Entrée</b_bis> {{ APIData_RSS[0].date_entree }}</td>
+              </tr>
+              <tr>
+                <td class="idcard"><b_bis>Sexe</b_bis> {{ APIData_RSS[0].sexe }}</td>
+                <td class="idcard"><b_bis>Sortie</b_bis> {{ APIData_RSS[0].date_sortie }}</td>
+              </tr>
+              <tr>
+                <td><b_bis>Naissnce</b_bis> {{ APIData_RSS[0].date_nais }}</td>
+                <td><b_bis>UM</b_bis> {{ APIData_RSS[0].num_um }}</td>
+              </tr>
+            </v-container>
+          </v-card>
+        </v-flex>
+        <v-flex md1 lg1></v-flex>
+        <v-flex md2 lg2>
+          <v-card height="100%" >
+            <v-card-title class="pb-0 justify-center">GHM</v-card-title>
+            <v-container style="height: 140px">
+              <a>Initial : <b_bis2>{{ APIData_RSS[0].ghm }}</b_bis2></a>
+              <br><br>
+              <a>Actuel : <b_bis2>    
+                <v-progress-circular
+                  :size="20"
+                  :width="2"
+                  color="red"
+                  indeterminate
+                ></v-progress-circular></b_bis2></a>
+
+              <tr></tr>
+
+              <v-card-subtitle class="text-center">[{{ APIData_RSS[0].bb }}-{{ APIData_RSS[0].bh }}] ({{ APIData_RSS[0].dms }}) ({{ APIData_RSS[0].tp }}€)</v-card-subtitle>
+              
+
+
+            
+            </v-container>
+            
+          </v-card>
+        </v-flex>
+        
+        <v-flex md1 lg1></v-flex>
+        <v-flex md2 lg2>
+          <v-card class="gain" height="100%">
+            <v-card-title class="pb-0 justify-center">GAIN ACTUEL</v-card-title>
+            <v-container>
+              <p><v-progress-circular
+                  :size="40"
+                  :width="2"
+                  color="red"
+                  indeterminate
+                ></v-progress-circular>€</p>
+            </v-container>
+          </v-card>
+        </v-flex>
+                <v-flex md1 lg1></v-flex>
+        <v-flex md2 lg2>
+          <v-card height="100%">
+            <v-card-title class="pb-0 justify-center">OBJECTIF</v-card-title>
+            <v-container>
+              <p>{{ APIData_RSS[0].tarif_pred }} €</p>
+              <p><b_bis2>{{ APIData_RSS[0].ghm_pred }}</b_bis2></p>
+              <p>{{ APIData_RSS[0].score }}%</p>
+            </v-container>
+          </v-card>
+        </v-flex>
+        <v-flex md1 lg1></v-flex>
+        
+      </v-layout>
+
+</v-container>
+  <!--<Headercards></Headercards>-->
+ <!-- <a v-if="donnee==1"> das: {{APIData_RUM[1].acte.acte[0].id}} </a>
+
+<div v-for="(rum,index) in APIData_RUM" :key="index" class="col-md-4">
+    <a>({{index}}) </a>
+<a> Num RUM:{{rum.info_carte.num_rum}} </a>
+<a> DP : {{rum.dp.dp[0].dp}} </a>
+<div v-for="(das2,index2) in rum.das.das" :key="das2.id" class="col-md-4">
+    <a>({{index}},{{index2}}) </a>
+<a> DAS : {{das2.das}} </a>
+</div>
+<div v-for="(acte3,index3) in rum.acte.acte" :key="acte3.id" class="col-md-4">
+    <a>({{index}},{{index3}}) </a>
+<a> Acte : {{acte3.acte}} </a>
+</div>
+
+</div>
+-->
+
+
+<div class="mx-auto" v-if="donnee==1" style="margin-bottom:10px;">
+ <v-card height="100%" style="border: 3px solid rgb(120, 120, 120)">
+            <v-container class="headercards">
+              <a>Commentaire de l'algorithme : -------------------------------------</a>
+            </v-container>
+          </v-card>
+</div>
+
+ <div class="text-center" v-if="donnee==1">
+ <v-menu offset-y top>
+ <template v-slot:activator="{ on, attrs }">
+ <v-btn small color="red" dark v-bind="attrs" v-on="on">
+ <v-icon>mdi-menu</v-icon>
+ </v-btn>
+ </template>
+ <v-list>
+ <v-list-item
+ v-for="(option, index) in deroulant"
+ :key="index"
+ @click="selectSelection(option)"
+ >
+ <v-list-item-title>{{ option.title }}</v-list-item-title>
+ </v-list-item>
+ </v-list>
+ </v-menu>
+ </div>
+
+    <div class="album py-5 bg-light">
+        <div class="container">
+        <div class="row">
+
+          
+  <span v-for="(rum,index) in APIData_RUM" :key="index" class="col-md-4">
+
+  <div v-bind:class="flipped ? 'flip-container mx-auto flipped': 'flip-container mx-auto'">
+      <div class="flipper">
+        <div class="front">
+
+<!-- Implementation des cartes -->
+          <div>
+          <v-card v-bind:style =var_bordure_fonction(index) class="d-inline-block align-top" max-width="400" outlined elevation="18">
+
+  <!-- Tri du Titre -->
+
+           <v-card-title > 
+            <div class="mx-auto">
+              <k>UM {{rum.info_carte.num_um}} | CMD ou GHM</k>
+            </div>
+            <div class="mx-auto">
+              <k>{{rum.duree.duree[0].duree}} jour(s)</k>
+            </div>
+          </v-card-title>
+
+  <!-- Tri des données -->
+
+    
+
+    <!-- Création mini carte -->
+    <v-expansion-panels focusable>
+<v-expansion-panel>
+<v-expansion-panel-header style="text-align:center">
+    <ab>DP</ab>
+</v-expansion-panel-header>
+          <v-card>
+            <v-card-title>
+              <v-col class="d-flex" cols="25" sm="25">
+              <v-icon large class="mx-auto" color="red darken-2">mdi-domain</v-icon>
+              <b>{{rum.dp.dp[0].dp}}</b>
+              </v-col>
+              <ab>{{rum.dp.dp[0].libelle}} </ab>
+            </v-card-title>
+          </v-card>
+
+    <!-- Création d'ajout -->
+
+<v-expansion-panel-content>
+<div style="height:55px">
+          <v-col class="d-inline-flex p-2 bd-highlight">
+
+            <v-select v-if="var_input1==false" v-model="var_dp[index]" :items="var_items" label="DP" outlined></v-select>
+            <v-autocomplete filled rounded v-if="var_input1==true" v-on-click="liste_das" v-model="var_dp[index]" label="DP" :items="APIData_liste_das"
+            append-icon="mdi-magnify"
+            d-flex
+            > 
+                        <template v-slot:append>
+                          <v-fade-transition leave-absolute>
+                            <v-progress-circular
+                              v-if="loading"
+                              size="24"
+                              color="info"
+                              indeterminate
+                            ></v-progress-circular>
+                          </v-fade-transition>
+
+                        </template>
+                
+                      </v-autocomplete>
+            <v-subheader>
+              <v-btn  @click="change_input1"><img width="20" height="8" src="../assets/keyword.png"></v-btn>
+              <v-btn color=#666666 v-on:click="remplace_dp(index,var_dp[index])">Ajouter</v-btn>
+            </v-subheader>
+          </v-col>
+</div>       
+</v-expansion-panel-content>
+</v-expansion-panel>
+</v-expansion-panels>          
+
+
+   <!-- Création mini carte -->
+    <v-expansion-panels focusable>
+<v-expansion-panel>
+<v-expansion-panel-header style="text-align:center">
+    <ab>DR</ab>
+</v-expansion-panel-header>
+         
+          <v-card v-if="rum.info_carte.dr!='        '">
+            <v-card-title>
+              <v-icon large color="darken-2">mdi-domain</v-icon >
+              <b>{{rum.info_carte.dr}}</b>
+               <a v-on:click="supp_dr(index)"> <bb>__________________</bb><img width="20" height="8" src="../assets/delete.png"></a>
+            </v-card-title>
+          </v-card>
+   
+<v-expansion-panel-content>
+<div style="height:55px">
+    <v-col class="d-flex" cols="12" sm="12" v-if="var_retourner==false">
+
+        <v-select v-model="var_dr[index]" v-if="var_input1 == false" :items="var_items" label="DR" outlined></v-select>
+                   <v-autocomplete filled rounded v-if="var_input1==true" v-on-click="liste_das" v-model="var_dr[index]" label="DR" :items="APIData_liste_das"
+            append-icon="mdi-magnify"
+            d-flex
+            > 
+                        <template v-slot:append>
+                          <v-fade-transition leave-absolute>
+                            <v-progress-circular
+                              v-if="loading"
+                              size="24"
+                              color="info"
+                              indeterminate
+                            ></v-progress-circular>
+                          </v-fade-transition>
+
+                        </template>
+                
+                      </v-autocomplete>
+        <v-subheader>
+          <v-btn  @click="change_input1">
+          <img width="20" height="8" src="../assets/keyword.png">
+          </v-btn>
+        <v-btn color=#666666 v-on:click="ajout_dr(index,var_dr[index])">Remplacer</v-btn>
+        </v-subheader>
+    </v-col>
+
+</div>       
+</v-expansion-panel-content>
+</v-expansion-panel>
+</v-expansion-panels>  
+
+    <v-expansion-panels focusable>
+<v-expansion-panel>
+<v-expansion-panel-header style="text-align:center">
+    <ab>DAS</ab>
+</v-expansion-panel-header>
+    <!-- Création mini carte -->
+<div style="max-height:400px; overflow:scroll">
+          <div  v-for="(das2) in rum.das.das" :key="das2.id">
+            <v-card >
+              <v-card-title >
+                <v-col class="d-flex" cols="25" sm="25">
+                <a>{{das2.das}} | <b>{{das2.severite}}</b></a>
+                <!--  <v-icon v-on:click="remplace_dp(das2.das)" large class="mx-auto">mdi-arrow-up-bold-box-outline</v-icon>-->
+                 <a v-on:click="supp_das(index,das2.das)"> <bb>___________________</bb><img width="20" height="8" src="../assets/delete.png"></a>
+                </v-col>
+                
+                <ab>{{das2.libelle}}</ab>
+
+              </v-card-title>
+            </v-card >
+          </div>
+</div>
+
+
+    <!-- Création d'ajout -->
+
+
+<v-expansion-panel-content>
+<div style="height:55px">
+
+          <v-col class="d-inline-flex p-2 bd-highlight">
+
+            <v-select v-if="var_input1==false" v-model="var_das[index]" :items="var_items" label="DAS" outlined></v-select>
+            <v-autocomplete filled rounded v-if="var_input1==true" v-on-click="liste_das" v-model="var_das[index]" label="DAS" :items="APIData_liste_das"
+            append-icon="mdi-magnify"
+            d-flex
+            > 
+                        <template v-slot:append>
+                          <v-fade-transition leave-absolute>
+                            <v-progress-circular
+                              v-if="loading"
+                              size="24"
+                              color="info"
+                              indeterminate
+                            ></v-progress-circular>
+                          </v-fade-transition>
+
+                        </template>
+                
+                      </v-autocomplete>
+            <v-subheader>
+              <v-btn  @click="change_input1"><img width="20" height="8" src="../assets/keyword.png"></v-btn>
+              <v-btn color=#666666 v-on:click="ajout_das(index,var_das[index])">Ajouter</v-btn>
+            </v-subheader>
+          </v-col>
+
+</div>       
+</v-expansion-panel-content>
+</v-expansion-panel>
+</v-expansion-panels>
+
+ 
+
+    <!-- Création mini carte -->
+
+    <v-expansion-panels focusable>
+<v-expansion-panel>
+<v-expansion-panel-header style="text-align:center">
+    <ab>ACTES CLASSANTS</ab>
+</v-expansion-panel-header>
+          <div style="max-height:300px; overflow:scroll">
+            <div v-for="(acte4) in rum.acte_classant.acte" :key="acte4.id">
+              <v-card >
+                <v-card-title>
+                  <v-col class="d-flex" cols="25" sm="25">
+                    <v-icon large class="mx-auto" color="grey darken-2">mdi-domain</v-icon>
+                  <a>{{acte4.acte}}</a>
+                  <a v-on:click="supp_acte(index,acte4.acte)"> <bb>_________________</bb><img width="20" height="8" src="../assets/delete.png"></a>
+                  </v-col>
+                  <br>
+                  <ab>{{acte4.libelle}}</ab>
+
+                </v-card-title>
+              </v-card>
+            </div>
+          </div>
+
+    <!-- Création d'ajout -->
+
+<v-expansion-panel-content>
+<div style="height:55px">
+
+
+          <v-col class="d-flex" cols="12" sm="12">
+
+             <v-select v-if="var_input2 == false" v-model="var_acte[index]" :items="var_items" label="Actes" outlined></v-select>
+              <v-autocomplete filled rounded v-if="var_input2==true"  v-model="var_acte[index]" label="Actes" :items="APIData_liste_actes"
+            append-icon="mdi-magnify"
+            d-flex
+            > 
+                        <template v-slot:append>
+                          <v-fade-transition leave-absolute>
+                            <v-progress-circular
+                              v-if="loading"
+                              size="24"
+                              color="info"
+                              indeterminate
+                            ></v-progress-circular>
+                          </v-fade-transition>
+
+                        </template>
+                
+                      </v-autocomplete>
+              <v-subheader>
+                <v-btn  @click="change_input2"><img width="20" height="8" src="../assets/keyword.png"  ></v-btn>
+              <v-btn color=#666666 v-on:click="ajout_acte(index,var_acte[index])">Ajouter</v-btn>
+              </v-subheader>
+          </v-col>
+  </div>       
+  </v-expansion-panel-content>
+  </v-expansion-panel>
+  </v-expansion-panels>
+    <!-- Création commentaire -->
+
+          <v-card-actions>
+            <v-col>
+              <div>
+                <v-textarea v-model="var_commentaire[index]" clearable class="mx-2" rows="1" prepend-icon="mdi-comment" clear-icon="mdi-close-circle" label="Commentaire" name="input-7-1"></v-textarea>
+              </div>
+              <v-btn @click="flipped=true"><img width="20" height="8" src="../assets/arrow-circle.png"  ></v-btn>
+            </v-col>
+          </v-card-actions>
+          </v-card>
+
+
+</div>
+    </div>
+    <div class="back">
+      <v-card v-bind:style =var_bordure_fonction(index) class="d-inline-block align-top" max-width="400" outlined elevation="18">
+  <!-- Tri du Titre -->
+
+           <v-card-title > 
+            <div class="mx-auto">
+              <k>UM {{rum.info_carte.num_um}} | CMD ou GHM</k>
+            </div>
+            <div class="mx-auto">
+              <k>{{rum.duree.duree[0].duree}} jour(s)</k>
+            </div>
+          </v-card-title>
+    <v-expansion-panels focusable>
+<v-expansion-panel>
+<v-expansion-panel-header style="text-align:center">
+    <ab>IGS</ab>
+</v-expansion-panel-header>
+
+    <!-- Création mini carte -->
+
+      <v-card :v-if="rum.info_carte.igs!='   '">
+        <v-card-title >
+        <a>{{rum.info_carte.igs}}</a>
+        </v-card-title>
+      </v-card >
+
+    <!-- Création d'ajout -->
+
+<v-expansion-panel-content>
+<div style="height:55px">
+
+    <v-col class="d-inline-flex p-2 bd-highlight" v-if="var_retourner==false">
+        <v-select v-if="var_input1==false" v-model="var_igs[index]" :items="var_items" label="IGS" outlined></v-select>
+        <v-text-field v-if="var_input1==true" v-model="var_igs[index]" label="IGS" :rules="rules" hide-details="auto"></v-text-field>
+        
+        <v-subheader>
+          <v-btn  @click="change_input1"><img width="20" height="8" src="../assets/keyword.png"  ></v-btn>
+          <v-btn color=#666666 v-on:click="remplace_igs(index,var_igs[index])">Remplacer</v-btn>
+        </v-subheader>
+    </v-col>
+
+  </div>       
+  </v-expansion-panel-content>
+  </v-expansion-panel>
+  </v-expansion-panels>
+ <!-- Création mini carte -->
+    <v-expansion-panels focusable>
+<v-expansion-panel>
+<v-expansion-panel-header style="text-align:center">
+    <ab>ACTES</ab>
+</v-expansion-panel-header>
+          <div style="max-height:300px; overflow:scroll">
+            <div v-for="(acte3) in rum.acte.acte" :key="acte3.id">
+              <v-card >
+                <v-card-title>
+                  <v-col class="d-flex" cols="25" sm="25">
+                  <a>{{acte3.acte}}</a>
+                  <a v-on:click="supp_acte(index,acte3.acte)"> <bb>_________________</bb><img width="20" height="8" src="../assets/delete.png"></a>
+                  </v-col>
+                  <br>
+                  <ab>{{acte3.libelle}}</ab>
+
+                </v-card-title>
+              </v-card>
+            </div>
+          </div>
+
+    <!-- Création d'ajout -->
+
+<v-expansion-panel-content>
+<div style="height:55px">
+
+          <v-col class="d-flex" cols="12" sm="12">
+
+              <v-select v-if="var_input2 == false" v-model="var_acte[index]" :items="var_items" label="Actes" outlined></v-select>
+              <v-autocomplete filled rounded v-if="var_input2==true"  v-model="var_acte[index]" label="Actes" :items="APIData_liste_actes"
+            append-icon="mdi-magnify"
+            d-flex
+            > 
+                        <template v-slot:append>
+                          <v-fade-transition leave-absolute>
+                            <v-progress-circular
+                              v-if="loading"
+                              size="24"
+                              color="info"
+                              indeterminate
+                            ></v-progress-circular>
+                          </v-fade-transition>
+
+                        </template>
+                
+                      </v-autocomplete>
+              <v-subheader>
+                <v-btn  @click="change_input2"><img width="20" height="8" src="../assets/keyword.png"  ></v-btn>
+              <v-btn color=#666666 v-on:click="ajout_acte(index,var_acte[index])">Ajouter</v-btn>
+              </v-subheader>
+          </v-col>
+  </div>       
+  </v-expansion-panel-content>
+  </v-expansion-panel>
+  </v-expansion-panels>
+
+<div class="ma-4">
+ <v-btn v-on:click="supplementaire()" v-if="var_supplementaire==false" class="mx-auto" fab dark color="grey">
+      <v-icon class="mx-auto" dark>
+        mdi-plus
+      </v-icon>
+</v-btn>
+</div>
+
+<div class="ma-4">
+ <v-btn v-on:click="supplementaire()" v-if="var_supplementaire==true" class="mx-auto" fab dark color="grey">
+      <v-icon dark>
+        mdi-minus
+      </v-icon>
+</v-btn>
+</div>
+
+<div v-if="var_supplementaire==true">
+    <v-expansion-panels focusable>
+<v-expansion-panel>
+<v-expansion-panel-header style="text-align:center">
+    <ab>AGE GESTATIONNEL</ab>
+</v-expansion-panel-header>
+
+
+
+    <!-- Création d'ajout -->
+<v-expansion-panel-content>
+<div style="height:55px">
+
+    <v-col class="d-inline-flex p-2 bd-highlight" v-if="var_retourner==false">
+        <v-text-field  v-model="var_igs[index]" label="Age" :rules="rules" hide-details="auto"></v-text-field>
+        <v-subheader>
+          <v-btn color=#666666 v-on:click="remplace_igs">Remplacer</v-btn>
+        </v-subheader>
+    </v-col>
+  </div>       
+  </v-expansion-panel-content>
+  </v-expansion-panel>
+  </v-expansion-panels>
+
+    <v-expansion-panels focusable>
+<v-expansion-panel>
+<v-expansion-panel-header style="text-align:center">
+    <ab>DATE REGLE</ab>
+</v-expansion-panel-header>
+
+
+
+    <!-- Création d'ajout -->
+
+<v-expansion-panel-content>
+<div style="height:55px">
+
+    <v-col class="d-inline-flex p-2 bd-highlight" v-if="var_retourner==false">
+        
+        <input type="date" label="Date"> 
+        
+        <v-subheader>
+    
+          <v-btn color=#666666 v-on:click="remplace_igs">Remplacer</v-btn>
+        </v-subheader>
+    </v-col>
+  </div>       
+  </v-expansion-panel-content>
+  </v-expansion-panel>
+  </v-expansion-panels>
+
+    <v-expansion-panels focusable>
+<v-expansion-panel>
+<v-expansion-panel-header style="text-align:center">
+    <ab>CONFIRMATION CODAGE</ab>
+</v-expansion-panel-header>
+
+
+    <!-- Création d'ajout -->
+
+<v-expansion-panel-content>
+<div style="height:55px">
+    <v-col class="d-inline-flex p-2 bd-highlight" v-if="var_retourner==false">
+        <v-select :items="var_choix" label="Choix" outlined></v-select>
+    </v-col>
+  </div>       
+  </v-expansion-panel-content>
+  </v-expansion-panel>
+  </v-expansion-panels>
+ <v-card-subtitle>Nombre de séance</v-card-subtitle>
+
+
+    <!-- Création d'ajout -->
+
+    <v-col class="d-inline-flex p-2 bd-highlight" v-if="var_retourner==false">
+ <v-text-field label="Choix" :rules="rules" hide-details="auto"></v-text-field>
+    </v-col>
+
+ <v-card-subtitle>Lits identifiés</v-card-subtitle>
+
+
+    <!-- Création d'ajout -->
+
+    <v-col class="d-inline-flex p-2 bd-highlight" v-if="var_retourner==false">
+ <v-text-field label="Choix" :rules="rules" hide-details="auto"></v-text-field>
+    </v-col>
+</div>
+<v-card-actions>
+    
+<v-col>
+<div>
+      <v-textarea
+          v-model="var_commentaire[index]"
+          clearable
+          class="mx-2"
+          rows="1"
+          prepend-icon="mdi-comment"
+          clear-icon="mdi-close-circle"
+          label="Commentaire"
+          name="input-7-1"
+        ></v-textarea>
+</div>
+
+
+<v-btn @click="flipped=false"><img width="20" height="8" src="../assets/arrow-circle.png"></v-btn>
+
+</v-col>
+
+</v-card-actions>
+      </v-card>
+    </div>
+          </div>
+  </div>
+
+  </span>
+
+
+ <v-btn class="d-inline-block align-top mx-auto" v-if="donnee==1" fab dark color="grey">
+      <v-icon dark>
+        mdi-plus
+      </v-icon>
+</v-btn>
+        </div>
+        </div>
+    </div> 
+
+
+<!-- <a>{{var_acte}} / {{var_das}} / {{var_dr}} / {{var_igs}} / {{var_commentaire}}</a> -->
+
+<!--<Historyrecapbis v-if="donnee==1"></Historyrecapbis>-->
+
+  <div v-if="donnee==1">
+    <v-container>
+      <div style="width: 100%">
+        <h2 style="text-align: center">Résumé</h2>
+        <v-container class="album py-5 bg-light">
+<v-row>
+        <div
+          style="
+            width: 60;
+            position: relative;
+            margin-right: auto;
+            margin-left: auto;
+          "
+          
+        >
+
+          <v-card
+          class="col-md-4"
+            style="
+              display: inline-block;
+              width: 45%;
+              min-height: 700px;
+              float: left;
+              background-color: #eee; margin-bottom:10px;"
+              
+              >
+            <div style="padding-left: 50%; padding-right: 50%">
+              <v-badge dot color="grey"></v-badge>
+            </div>
+            <v-card-title
+              class="justify-center"
+              primary-title
+              style="padding-bottom: 16px; font-size: 20px; font-weight: bolder"
+            >
+              {{APIData_RSS[0].ghm}} | --- €
+            </v-card-title>
+            <v-container>
+               <span v-for="(rum,index) in APIData_resume" :key="index" class="col-md-4">
+               <v-card style="margin-bottom:10px;">
+                <v-card-title>
+                  {{APIData_RUM[index].info_carte.num_um}} : {{APIData_RUM[index].duree.duree[0].duree}} jours
+                </v-card-title>
+                            <v-container class="headercards">
+              <tr style="margin-bottom: 16px">
+                <td class="idcard" v-if="rum.dp.dp[0].dp!='vide'"><b_bis>DP</b_bis> {{rum.dp.dp[0].dp}}</td>
+                <bb>__</bb>
+                <td class="idcard" v-if="rum.info_carte.dr!='vide'"><b_bis>DR</b_bis> {{rum.info_carte.dr}}</td>
+
+              </tr>
+              <tr width="50px">
+                <td class="idcard" v-if="rum.das.das[0].das!='vide'"><b_bis>DAS :</b_bis> </td>
+                <span v-for="(das,index) in rum.das.das[0].das" :key="index">
+                <td class="idcard" v-if="rum.das.das[0].das!='vide'">{{das}} | </td>
+                </span>
+                <td class="idcard" v-if="rum.acte_classant.acte[0].acte!='vide'"><b_bis>Actes classants : {{rum.acte_classant.acte[0].acte}}</b_bis> </td>
+              </tr>
+              <tr>
+                <td class="idcard" v-if="rum.acte.acte[0].acte!='vide'"><b_bis>Actes :</b_bis> </td>
+                <span v-for="(acte,index) in rum.acte.acte[0].acte" :key="index">
+                <td class="idcard" v-if="rum.acte.acte[0].acte!='vide'">{{acte}} | </td>
+                </span>
+                <td class="idcard" v-if="rum.info_carte.igs!='vide'"><b_bis>IGS : {{rum.info_carte.igs}}</b_bis> </td>
+              </tr>
+              <tr>
+              </tr>
+            </v-container>
+              </v-card>
+               </span>
+            </v-container>
+
+          </v-card>
+
+           <v-card
+          class="col-md-4"
+            style="
+              display: inline-block;
+              width: 45%;
+              min-height: 700px;
+              float: left;
+              background-color: #eee; margin-bottom:10px;"  
+              >
+            <div style="padding-left: 50%; padding-right: 50%">
+              <v-badge dot color="red"></v-badge>
+            </div>
+            <v-card-title
+              class="justify-center"
+              primary-title
+              style="padding-bottom: 16px; font-size: 20px; font-weight: bolder"
+            >
+              ----- | --- €
+            </v-card-title>
+            <v-container>
+               <span v-for="(rum,index) in APIData_resume" :key="index" class="col-md-4">
+               <v-card style="margin-bottom:10px;">
+                <v-card-title>
+                  {{APIData_RUM[index].info_carte.num_um}} : {{APIData_RUM[index].duree.duree[0].duree}} jours
+                </v-card-title>
+                            <v-container class="headercards">
+              <tr style="margin-bottom: 16px">
+                <td class="idcard" v-if="rum.dp.dp[0].dp!='vide'"><b_bis>DP</b_bis> {{rum.dp.dp[0].dp2}}</td>
+                <bb>__</bb>
+                <td class="idcard" v-if="rum.info_carte.dr!='vide'"><b_bis>DR</b_bis> {{rum.info_carte.dr2}}</td>
+
+              </tr>
+              <tr width="50px">
+                <td class="idcard" v-if="rum.das.das[0].das!='vide'"><b_bis> DAS :</b_bis> </td>
+                <span v-for="(das,index) in rum.das.das[0].das2" :key="index">
+                <td class="idcard" v-if="rum.das.das[0].das!='vide'">{{das}} | </td>
+                </span>
+                <td class="idcard" v-if="rum.acte_classant.acte[0].acte!='vide'"><b_bis>Actes classants : {{rum.acte_classant.acte[0].acte2}}</b_bis> </td>
+              </tr>
+              <tr>
+                <td class="idcard" v-if="rum.acte.acte[0].acte!='vide'"><b_bis>Actes :</b_bis> </td>
+                <span v-for="(acte,index) in rum.acte.acte[0].acte2" :key="index">
+                <td class="idcard" v-if="rum.acte.acte[0].acte!='vide'">{{acte}} | </td>
+                </span>
+                <td class="idcard" v-if="rum.info_carte.igs!='vide'"><b_bis>IGS : {{rum.info_carte.igs2}}</b_bis> </td>
+              </tr>
+              <tr>
+              </tr>
+            </v-container>
+              </v-card>
+               </span>
+            </v-container>
+
+          </v-card>
+
+          <v-card
+          class="col-md-4"
+            style="
+              display: inline-block;
+              width: 45%;
+              min-height: 700px;
+              float: right;
+              background-color: #eee; margin-bottom:10px;"
+              
+              >
+            <div style="padding-left: 50%; padding-right: 50%">
+              <v-badge dot color="grey"></v-badge>
+            </div>
+            <v-container>
+<v-card>
+          <v-card-subtitle>
+            RUM 0
+          </v-card-subtitle>
+          <ab> {{var_commentaire[0]}} </ab>
+          <v-card-subtitle>
+            RUM 1
+          </v-card-subtitle>
+          <ab> {{var_commentaire[1]}} </ab>
+          <v-card-subtitle>
+            RUM 2
+          </v-card-subtitle>
+          <ab> {{var_commentaire[2]}} </ab>
+          <v-card-subtitle>
+            RUM 3
+          </v-card-subtitle>
+          <ab> {{var_commentaire[3]}} </ab>
+          <v-card-subtitle>
+            Global
+          </v-card-subtitle>
+          <ab> {{commentaire_bonus}} </ab>
+          </v-card>
+        
+         <v-textarea
+          v-model="commentaire_bonus"
+          class="mx-2"
+          rows="1"
+          prepend-icon="mdi-comment"
+          clear-icon="mdi-close-circle"
+          name="input-7-1"
+          label="Commentaire bonus"
+        ></v-textarea>
+            </v-container>
+
+          </v-card>
+        </div>
+
+
+</v-row>
+        </v-container>
+                <v-row justify="center" style="margin-top: 20px">
+          <v-btn color="red"> Valider</v-btn>
+        </v-row>
+              </div>
+    </v-container>
+  </div>
+
+</v-app>
+    </div>
+
+</template>
+
+
+
+<script>
+import Navbar from '../components/Navbar'
+//import Headercards from './headercards.vue'
+//import Historyrecapbis from "./historyrecapbis.vue";
+//mport critere from './criteres.vue'
+import { getAPI } from '../axios-api'
+
+
+
+
+
+
+export default {
+
+    name: 'codage',
+    data() {
+        return {
+            var_retourner : false,
+            var_items: ['Foo', 'Bar', 'Fizz', 'Buzz'],
+            var_input1 : true,
+            var_input2 : false,
+            var_dr : [],
+            var_igs : [],
+            var_das : [],
+            var_dp : [],
+            var_choix : ["Oui","Non"],
+            var_acte : [],
+            var_commentaire : [],
+            var_commentaire2 : {},
+            var_supplementaire : false,
+            var_rss : "",
+            API_finess : [],
+            API_date: [],
+            API_file : [],
+            var_file : "",
+            var_finess : "",
+            var_date : "",   
+            flipped : false,
+            API_rss : [],
+            APIData_RSS : [],
+            APIData_RUM : [],
+            APIData_resume : [],
+            APIData_liste_das : [],
+            APIData_liste_actes : [],
+            donnee : 0,
+            espace : "  uuu    ",
+            commentaire_bonus : "",
+            deroulant: [{title : 'Réinitialiser'},{title: 'Sauvegarder'},{title : 'Critères'}],
+            critere : ['>90%','Mal codé','critere2','critere3','critere4','critere5','critere5','critere6','critere7','critere8'],
+            var_critere : [],
+            var_plus : false,
+            progression : false,
+            
+
+            }
+    },
+    components: {
+        Navbar,
+       // Headercards,
+       // Historyrecapbis,
+       //critere,
+
+    },
+
+
+
+    
+
+         methods: {
+
+             retourner(){
+                 this.var_retourner = !this.var_retourner
+             },
+             supplementaire(){
+                 this.var_supplementaire = !this.var_supplementaire
+             },
+             change_input1(){
+                 this.var_input1 = !this.var_input1
+             },
+
+             change_input2(){
+                 this.var_input2 = !this.var_input2
+             },
+             rss_suivant(i){
+               
+               while(this.var_rss!=this.API_rss[i]){
+                 i = i + 1
+               }
+                this.progression = true
+                this.var_rss= this.API_rss[i+1]
+                
+                this.com()
+                this.recherche_rss()
+             },
+             rss_precedant(i){
+                 while(this.var_rss!=this.API_rss[i]){
+                 i = i + 1
+               }
+                 this.var_rss= this.API_rss[i-1]
+              this.com()
+              this.recherche_rss()
+
+             },
+            var_bordure_fonction(i){
+              if (i == this.APIData_RSS[0].determinant){
+                return "border: 6px solid rgb(200, 120, 120)"
+              }
+              else{
+                return ""
+              }
+            },
+
+
+
+
+
+//fonction qui envoi le rss et retotune les données de celui ci
+            async recherche_rss1(){
+                //this.APIData_RSS = null
+                const formData = new FormData();
+                formData.append("rss", this.var_rss);
+                formData.append("user", this.$store.user);
+                formData.append("finess", this.var_finess);
+                formData.append("date", this.var_date);
+                getAPI.post('/recherche_rss/',formData)
+               .then(response =>{
+                console.log('Resultat recu')
+                this.APIData_RSS = response.data
+            })
+            .catch(err => {
+                console.log(err)
+            })
+            this.donnee=1
+            },
+
+//fonction qui envoi le rss et retourne les données de celui ci
+            async recherche_rum(){
+                //this.APIData_RSS = null
+                const formData = new FormData();
+                formData.append("rss", this.var_rss);
+                formData.append("user", this.$store.user);
+                formData.append("finess", this.var_finess);
+                formData.append("date", this.var_date);
+                getAPI.post('/recherche_rum/',formData)
+               .then(response =>{
+                console.log('Resultat recu')
+                this.APIData_RUM = response.data
+            })
+            .catch(err => {
+                console.log(err)
+            })
+            this.donnee=1
+            },
+
+//fonction qui envoi le rss et retourne les données de celui ci
+            async resume(){
+                //this.APIData_RSS = null
+                const formData = new FormData();
+                formData.append("rss", this.var_rss);
+                formData.append("user", this.$store.user);
+                formData.append("finess", this.var_finess);
+                formData.append("date", this.var_date);
+                getAPI.post('/resume/',formData)
+               .then(response =>{
+                console.log('Resultat recu')
+                this.APIData_resume = response.data
+            })
+            .catch(err => {
+                console.log(err)
+            })
+            },
+
+            async recherche_rss(){
+              if((this.var_rss!= "")&(this.var_date!="")&(this.var_finess!="")){
+              await (this.progression = true)
+              this.recherche_rss1()
+              this.recherche_rum()
+              this.liste_das()
+              this.liste_actes()
+              this.resume()
+              this.progression=false
+              }
+              else{
+                 this.$fire({
+            text: "Remplissez les champs requis",
+            timer: 5000
+            }).then(r => {
+            console.log(r.value);
+        });
+
+              }
+            },
+
+//fonction qui retourne la liste des DAS
+            async liste_das(){
+                getAPI.get('/liste_das/')
+               .then(response =>{
+                console.log('Resultat recu')
+                this.APIData_liste_das = response.data
+            })
+            .catch(err => {
+                console.log(err)
+            })
+            },
+//fonction qui retourne la liste des actes
+            async liste_actes(){
+                getAPI.get('/liste_actes/')
+               .then(response =>{
+                console.log('Resultat recu')
+                this.APIData_liste_actes = response.data
+            })
+            .catch(err => {
+                console.log(err)
+            })
+            },
+
+
+//fonction qui ajoute un DAS
+            async ajout_das(index,code){
+                const formData = new FormData();
+                formData.append("rss", this.var_rss);
+                formData.append("user", this.$store.user);
+                formData.append("finess", this.var_finess);
+                formData.append("date", this.var_date);
+                formData.append("code", code);
+                formData.append("rum", index);
+                
+                await getAPI.post('/ajout_das/',formData)
+               .then(response =>{
+                console.log(response)
+                //this.APIData_RSS = response.data
+            })
+            .catch(err => {
+                console.log(err)
+            })
+                this.var_das[index]=""
+                this.recherche_rum()
+                this.resume()
+
+            },
+
+//fonction qui remplace DP par DAS
+            async remplace_dp(index,code){
+                const formData = new FormData();
+                formData.append("rss", this.var_rss);
+                formData.append("user", this.$store.user);
+                formData.append("finess", this.var_finess);
+                formData.append("date", this.var_date);
+                formData.append("code", code);
+                formData.append("rum", index);
+                
+                await getAPI.post('/modif_dp/',formData)
+               .then(response =>{
+                console.log(response)
+                //this.APIData_RSS = response.data
+            })
+            .catch(err => {
+                console.log(err)
+            })
+                this.var_dp[index]=""
+                this.recherche_rum()
+                this.resume()
+            },
+
+//fonction qui ajoute un acte
+            async ajout_acte(index,code){
+                const formData = new FormData();
+                formData.append("rss", this.var_rss);
+                formData.append("user", this.$store.user);
+                formData.append("finess", this.var_finess);
+                formData.append("date", this.var_date);
+                formData.append("code", code);
+                formData.append("rum", index);
+                
+                await getAPI.post('/ajout_acte/',formData)
+               .then(response =>{
+                console.log(response)
+                //this.APIData_RSS = response.data
+            })
+            .catch(err => {
+                console.log(err)
+            })
+                this.var_das[index]=""
+                this.recherche_rum()
+                this.resume()
+            },
+//fonction qui supprime un DAS
+            async supp_das(index,code){
+                const formData = new FormData();
+                formData.append("rss", this.var_rss);
+                formData.append("user", this.$store.user);
+                formData.append("finess", this.var_finess);
+                formData.append("date", this.var_date);
+                formData.append("code", code);
+                formData.append("rum", index);
+                
+                await getAPI.post('/supp_das/',formData)
+               .then(response =>{
+                console.log(response)
+                //this.APIData_RSS = response.data
+            })
+            .catch(err => {
+                console.log(err)
+            })
+                this.recherche_rum()
+                this.resume()
+            },
+//fonction qui supprime un acte
+            async supp_acte(index,code){
+                const formData = new FormData();
+                formData.append("rss", this.var_rss);
+                formData.append("user", this.$store.user);
+                formData.append("finess", this.var_finess);
+                formData.append("date", this.var_date);
+                formData.append("code", code);
+                formData.append("rum", index);
+                
+                await getAPI.post('/supp_acte/',formData)
+               .then(response =>{
+                console.log(response)
+                //this.APIData_RSS = response.data
+            })
+            .catch(err => {
+                console.log(err)
+            })
+                this.recherche_rum()
+                this.resume()
+            },
+
+//fonction qui supprime DR
+            async supp_dr(index){
+                const formData = new FormData();
+                formData.append("rss", this.var_rss);
+                formData.append("user", this.$store.user);
+                formData.append("finess", this.var_finess);
+                formData.append("date", this.var_date);
+                formData.append("rum", index);
+                
+                await getAPI.post('/supp_dr/',formData)
+               .then(response =>{
+                console.log(response)
+                //this.APIData_RSS = response.data
+            })
+            .catch(err => {
+                console.log(err)
+            })
+                this.recherche_rum()
+                this.resume()
+            },
+
+//fonction qui supprime IGS
+            async supp_igs(index,code){
+                const formData = new FormData();
+                formData.append("rss", this.var_rss);
+                formData.append("user", this.$store.user);
+                formData.append("finess", this.var_finess);
+                formData.append("date", this.var_date);
+                formData.append("code", code);
+                formData.append("rum", index);
+                
+                await getAPI.post('/supp_igs/',formData)
+               .then(response =>{
+                console.log(response)
+                //this.APIData_RSS = response.data
+            })
+            .catch(err => {
+                console.log(err)
+            })
+                this.recherche_rum()
+                this.resume()
+            },
+
+//fonction qui remplace l'IGS
+            async remplace_igs(index,code){
+                const formData = new FormData();
+                formData.append("rss", this.var_rss);
+                formData.append("user", this.$store.user);
+                formData.append("finess", this.var_finess);
+                formData.append("date", this.var_date);
+                formData.append("code", code);
+                formData.append("rum", index);
+                
+                await getAPI.post('/modif_igs/',formData)
+               .then(response =>{
+                console.log(response)
+                //this.APIData_RSS = response.data
+            })
+            .catch(err => {
+                console.log(err)
+            })
+                this.var_igs[index]=""
+                this.recherche_rum()
+                this.resume()
+            },
+
+//fonction qui remplace le DR
+            async ajout_dr(index,code){
+                const formData = new FormData();
+                formData.append("rss", this.var_rss);
+                formData.append("user", this.$store.user);
+                formData.append("finess", this.var_finess);
+                formData.append("date", this.var_date);
+                formData.append("code", code);
+                formData.append("rum", index);
+                
+                await getAPI.post('/ajout_dr/',formData)
+               .then(response =>{
+                console.log(response)
+                //this.APIData_RSS = response.data
+            })
+            .catch(err => {
+                console.log(err)
+            })
+                this.var_dr[index]=""
+                this.recherche_rum()
+                this.resume()
+            },
+
+//fonction qui envoi commentaire
+            async com(){
+                const formData = new FormData();
+                formData.append("rss", this.var_rss);
+                formData.append("user", this.$store.user);
+                formData.append("finess", this.var_finess);
+                formData.append("date", this.var_date);
+                formData.append("commentaire", this.var_commentaire);
+                formData.append("rum", this.APIData_RUM[0].info_carte.nombre_rum);
+                
+                await getAPI.post('/commentaire/',formData)
+               .then(response =>{
+                console.log(response)
+                //this.APIData_RSS = response.data
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
+            },
+
+
+
+//fonction qui envoi user et recupere finess
+            async recherche_finess(){
+                const formData = new FormData();
+                formData.append("user", this.$store.user);
+                getAPI.post('/liste_etablissement_codage/',formData)
+               .then(response =>{
+                console.log('Resultat recu')
+                this.API_finess = response.data
+            })
+            .catch(err => {
+                console.log(err)
+            })
+            },
+//fonction qui envoi finess et recupere date
+            async recherche_date(){
+                const formData = new FormData();
+                formData.append("user", this.$store.user);
+                formData.append("finess", this.var_finess);
+                if(this.var_finess!=""){
+                  getAPI.post('/liste_date_codage/',formData)
+                .then(response =>{
+                  console.log('Resultat recu')
+                  this.API_date = response.data
+              })
+              .catch(err => {
+                  console.log(err)
+              })
+                }
+              else{
+                this.$fire({
+            text: "Selectionnez un finess",
+            timer: 5000
+            }).then(r => {
+            console.log(r.value);
+        });
+              }
+            },
+
+//fonction qui envoi les finess et date et recupere num RSS
+            async liste_rss(){
+                const formData = new FormData();
+                formData.append("user", this.$store.user);
+                formData.append("finess", this.var_finess);
+                formData.append("date", this.var_date);
+                if(this.var_date!=""){
+                getAPI.post('/liste_rss/',formData)
+               .then(response =>{
+                console.log('Resultat recu')
+                this.API_rss = response.data
+            })
+            .catch(err => {
+                console.log(err)
+            })
+                }
+                else{
+                  this.$fire({
+            text: "Selectionnez une date",
+            timer: 5000
+            }).then(r => {
+            console.log(r.value);
+        });
+                }
+            },
+//fonction qui reinitialise toutes les données
+            async reinitialiser(){
+                const formData = new FormData();
+                formData.append("rss", this.var_rss);
+                formData.append("user", this.$store.user);
+                formData.append("finess", this.var_finess);
+                formData.append("date", this.var_date);
+                getAPI.post('/reinitialiser/',formData)
+               .then(response =>{
+                console.log(response)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+            this.recherche_rss()
+            },
+
+//fonction qui execute l'action de la selection
+          async selectSelection(option){
+            if(option=='Réinitialiser'){
+              this.reinitialiser()
+            }
+          },
+
+
+    }
+    }
+</script>
+
+<style scoped>
+
+
+      a {
+      color:#666666;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 15px;
+  }
+        ab {
+      color:#293133;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 14px;
+    
+
+    
+  }
+  b{
+      color : #AB111C;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+          font-size: 15px;
+
+  }
+    b_bis{
+      color : #AB111C;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+          font-size: 14px;
+
+  }
+      b_bis2{
+      color : #AB111C;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+          font-size: 18px;
+
+  }
+  c{
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            
+  }
+    j{
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-size: 15px;
+            color : #666666;
+            
+  }
+
+  d{
+      color : #AB111C;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      font-size: 35px;
+      
+  }
+e{
+    color : #666666;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 35px;
+    
+}
+f{
+      color : #AB111C;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      font-size: 10px;
+      
+  }
+  k{
+      color : #AB111C;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+          font-size: 25px;
+
+  }
+    bb{
+      color : #FFFFFF;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+          font-size: 25px;
+
+  }
+i.frontFlipBtn,
+i.backFlipBtn {
+    position:absolute; 
+    right: 20px; 
+    top: 20px;
+    color:#FFFFFF;
+}
+i.backFlipBtn {
+    -webkit-transform: rotateY(-180deg);
+    -moz-transform: rotateY(-180deg);
+    -o-transform: rotateY(-180deg);
+    -ms-transform: rotateY(-180deg);
+    transform: rotateY(-180deg);
+}
+.flip-container {
+  -webkit-perspective: 1000;
+  -moz-perspective: 1000;
+  -o-perspective: 1000;
+  perspective: 1000;
+}
+.flip-container {
+  min-height: 120px;
+}
+.flipper {
+  -moz-transform: perspective(1000px);
+  -moz-transform-style: preserve-3d;
+  position: relative;
+}
+.front,
+.back {
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -o-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transition: 0.6s;
+  -webkit-transform-style: preserve-3d;
+  -moz-transition: 0.6s;
+  -moz-transform-style: preserve-3d;
+  -o-transition: 0.6s;
+  -o-transform-style: preserve-3d;
+  -ms-transition: 0.6s;
+  -ms-transform-style: preserve-3d;
+  transition: 0.6s;
+  transform-style: preserve-3d;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+.back {
+  -webkit-transform: rotateY(-180deg);
+  -moz-transform: rotateY(-180deg);
+  -o-transform: rotateY(-180deg);
+  -ms-transform: rotateY(-180deg);
+  transform: rotateY(-180deg);
+  position: absolute;
+}
+.flip-container.flipped .back {
+  -webkit-transform: rotateY(0deg);
+  -moz-transform: rotateY(0deg);
+  -o-transform: rotateY(0deg);
+  -ms-transform: rotateY(0deg);
+  transform: rotateY(0deg);
+}
+.flip-container.flipped .front {
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
+  -o-transform: rotateY(180deg);
+  -ms-transform: rotateY(180deg);
+  transform: rotateY(180deg);
+}
+.front {
+  z-index: 2;
+}
+
+td.idcard {
+  padding-bottom: 7%;
+}
+td {
+  padding-bottom: 5%;
+  font-weight: 500;
+}
+
+tr {
+  text-align: center;
+  font-size: 14px;
+}
+
+.v-card.gain p {
+  text-align: center;
+  font-size: 40px;
+  font-weight: bold;
+  color: #AB111C;
+}
+.v-card.objectif td {
+  color: rgb(75, 75, 75);
+}
+.v-card p {
+  text-align: center;
+  margin: 8px;
+  font-weight: 500;
+}
+
+</style>
